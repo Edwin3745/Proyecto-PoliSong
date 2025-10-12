@@ -6,8 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PolisongMarketplaceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PolisongMarketplaceApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(PolisongMarketplaceApplication.class, args);
+    }
 }
+
+
