@@ -1,45 +1,68 @@
 package com.polisong.polisong_marketplace.model;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "valoracion")
 public class Valoracion {
 
+    // --------------------
+    // VARIABLES
+    // --------------------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idValoracion;
+    @Column(name = "id_valoracion")
+    private Integer idValoracion;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_producto")
-    private Producto producto;
+    @JoinColumn(name = "id_pedido")
+    private Pedido pedido;
 
-    private int puntuacion; // 1 a 5
+    @Column(name = "cantidad")
+    private Integer cantidad;
+
+    @Column(name = "calificacion")
+    private Integer calificacion;
+
+    @Column(name = "comentario", length = 255)
     private String comentario;
-    private Date fecha;
 
+    @Column(name = "fecha")
+    private LocalDateTime fecha;
+
+    // --------------------
+    // CONSTRUCTOR
+    // --------------------
     public Valoracion() {}
 
-    public int getIdValoracion() { return idValoracion; }
-    public void setIdValoracion(int idValoracion) { this.idValoracion = idValoracion; }
+    // --------------------
+    // GETTERS Y SETTERS
+    // --------------------
+    public Integer getIdValoracion() { return idValoracion; }
+    public void setIdValoracion(Integer idValoracion) { this.idValoracion = idValoracion; }
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public Producto getProducto() { return producto; }
-    public void setProducto(Producto producto) { this.producto = producto; }
+    public Pedido getPedido() { return pedido; }
+    public void setPedido(Pedido pedido) { this.pedido = pedido; }
 
-    public int getPuntuacion() { return puntuacion; }
-    public void setPuntuacion(int puntuacion) { this.puntuacion = puntuacion; }
+    public Integer getCantidad() { return cantidad; }
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+
+    public Integer getCalificacion() { return calificacion; }
+    public void setCalificacion(Integer calificacion) { this.calificacion = calificacion; }
 
     public String getComentario() { return comentario; }
     public void setComentario(String comentario) { this.comentario = comentario; }
 
-    public Date getFecha() { return fecha; }
-    public void setFecha(Date fecha) { this.fecha = fecha; }
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 }
+
 

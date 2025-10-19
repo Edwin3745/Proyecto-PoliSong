@@ -2,30 +2,60 @@ package com.polisong.polisong_marketplace.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario {
 
+    // --------------------
+    // VARIABLES
+    // --------------------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private Integer idUsuario;
+
+    @Column(name = "nombre", length = 100, nullable = false)
     private String nombre;
+
+    @Column(name = "correo", length = 100, nullable = false, unique = true)
     private String correo;
-    @Column(name = "contraseña")
+
+    @Column(name = "contraseña", length = 255)
     private String contrasena;
+
+    @Column(name = "cedula", length = 20)
     private String cedula;
+
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
+
+    @Column(name = "activo")
     private Boolean activo;
-    
+
+    // Relaciones
     @ManyToOne
     @JoinColumn(name = "id_rol")
     private Rol rol;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Telefono> telefonos;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Correo> correos;
+
+    // --------------------
+    // CONSTRUCTOR
+    // --------------------
     public Usuario() {}
 
-    // Getters y Setters
+    // --------------------
+    // GETTERS Y SETTERS
+    // --------------------
     public Integer getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
 
@@ -49,4 +79,10 @@ public class Usuario {
 
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
+
+    public List<Telefono> getTelefonos() { return telefonos; }
+    public void setTelefonos(List<Telefono> telefonos) { this.telefonos = telefonos; }
+
+    public List<Correo> getCorreos() { return correos; }
+    public void setCorreos(List<Correo> correos) { this.correos = correos; }
 }

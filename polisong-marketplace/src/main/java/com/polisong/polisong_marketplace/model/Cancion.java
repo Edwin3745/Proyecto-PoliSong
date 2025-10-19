@@ -1,41 +1,66 @@
 package com.polisong.polisong_marketplace.model;
 
-
 import jakarta.persistence.*;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-
-
+@Table(name = "cancion")
 public class Cancion {
-@Id
+
+    // --------------------
+    // VARIABLES
+    // --------------------
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCancion;
+    @Column(name = "id_cancion")
+    private Integer idCancion;
 
+    @Column(name = "nombre_cancion", length = 100)
     private String nombreCancion;
-    private double precio;
-    private double duracion;
-    private double tamanio;
-    private int calidadKbps;
 
+    @Column(name = "precio")
+    private Double precio;
+
+    @Column(name = "duracion")
+    private Double duracion;
+
+    @Column(name = "tamanio")
+    private Double tamanio;
+
+    @Column(name = "calidad_kbps")
+    private Integer calidadKbps;
+
+    @OneToMany(mappedBy = "cancion")
+    @JsonIgnore
+    private List<DetallePedido> detalles;
+
+    // --------------------
+    // CONSTRUCTOR
+    // --------------------
     public Cancion() {}
 
-    // Getters y Setters
-    public int getIdCancion() { return idCancion; }
-    public void setIdCancion(int idCancion) { this.idCancion = idCancion; }
+    // --------------------
+    // GETTERS Y SETTERS
+    // --------------------
+    public Integer getIdCancion() { return idCancion; }
+    public void setIdCancion(Integer idCancion) { this.idCancion = idCancion; }
 
     public String getNombreCancion() { return nombreCancion; }
     public void setNombreCancion(String nombreCancion) { this.nombreCancion = nombreCancion; }
 
-    public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
+    public Double getPrecio() { return precio; }
+    public void setPrecio(Double precio) { this.precio = precio; }
 
-    public double getDuracion() { return duracion; }
-    public void setDuracion(double duracion) { this.duracion = duracion; }
+    public Double getDuracion() { return duracion; }
+    public void setDuracion(Double duracion) { this.duracion = duracion; }
 
-    public double getTamanio() { return tamanio; }
-    public void setTamanio(double tamanio) { this.tamanio = tamanio; }
+    public Double getTamanio() { return tamanio; }
+    public void setTamanio(Double tamanio) { this.tamanio = tamanio; }
 
-    public int getCalidadKbps() { return calidadKbps; }
-    public void setCalidadKbps(int calidadKbps) { this.calidadKbps = calidadKbps; }
+    public Integer getCalidadKbps() { return calidadKbps; }
+    public void setCalidadKbps(Integer calidadKbps) { this.calidadKbps = calidadKbps; }
+
+    public List<DetallePedido> getDetalles() { return detalles; }
+    public void setDetalles(List<DetallePedido> detalles) { this.detalles = detalles; }
 }

@@ -1,7 +1,7 @@
 package com.polisong.polisong_marketplace.service;
 
-import com.polisong.polisong_marketplace.model.Producto;
-import com.polisong.polisong_marketplace.repository.ProductoRepository;
+import com.polisong.polisong_marketplace.model.Vinilo;
+import com.polisong.polisong_marketplace.repository.ViniloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,20 +9,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductoService {
+public class ViniloService {
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private ViniloRepository productoRepository;
 
-    public List<Producto> listarTodos() {
+    public List<Vinilo> listarTodos() {
         return productoRepository.findAll();
     }
 
-    public Optional<Producto> buscarPorId(int idProducto) {
+    public Optional<Vinilo> buscarPorId(int idProducto) {
         return productoRepository.findById(idProducto);
     }
 
-    public Producto guardar(Producto producto) {
+    public Vinilo guardar(Vinilo producto) {
         return productoRepository.save(producto);
     }
 
@@ -30,15 +30,15 @@ public class ProductoService {
         productoRepository.deleteById(idProducto);
     }
 
-    public List<Producto> buscarPorNombre(String nombre) {
+    public List<Vinilo> buscarPorNombre(String nombre) {
         return productoRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
-    public List<Producto> buscarPorTipo(String tipo) {
+    public List<Vinilo> buscarPorTipo(String tipo) {
         return productoRepository.findByTipo(tipo);
     }
 
-    public List<Producto> listarActivos() {
+    public List<Vinilo> listarActivos() {
         return productoRepository.findByEstado("Activo");
     }
 }
