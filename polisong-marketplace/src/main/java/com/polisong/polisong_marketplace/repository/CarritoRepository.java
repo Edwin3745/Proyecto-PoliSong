@@ -1,5 +1,9 @@
 package com.polisong.polisong_marketplace.repository;
 
-public class CarritoRepository {
-    
+import com.polisong.polisong_marketplace.model.Carrito;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CarritoRepository extends JpaRepository<Carrito, Integer> {
 }

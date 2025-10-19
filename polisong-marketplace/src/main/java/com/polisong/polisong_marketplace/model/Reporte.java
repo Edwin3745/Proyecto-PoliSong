@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 @Table(name = "reporte")
 public class Reporte {
 
-    // --------------------
+  
     // VARIABLES
-    // --------------------
+   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reporte")
@@ -31,14 +31,14 @@ public class Reporte {
     @JoinColumn(name = "id_admin")
     private Usuario administrador;
 
-    // --------------------
+   
     // CONSTRUCTOR
-    // --------------------
+
     public Reporte() {}
 
-    // --------------------
+ 
     // GETTERS Y SETTERS
-    // --------------------
+  
     public Integer getIdReporte() { return idReporte; }
     public void setIdReporte(Integer idReporte) { this.idReporte = idReporte; }
 

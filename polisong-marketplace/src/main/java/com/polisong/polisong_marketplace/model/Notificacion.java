@@ -7,9 +7,8 @@ import java.time.LocalDateTime;
 @Table(name = "notificacion")
 public class Notificacion {
 
-    // --------------------
     // VARIABLES
-    // --------------------
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_notificacion")
@@ -26,16 +25,16 @@ public class Notificacion {
     private LocalDateTime fechaEnvio;
 
     @Column(name = "estado", length = 50)
-    private String estado; // Leída / No leída
+    private String estado; 
 
-    // --------------------
+  
     // CONSTRUCTOR
-    // --------------------
+
     public Notificacion() {}
 
-    // --------------------
+  
     // GETTERS Y SETTERS
-    // --------------------
+ 
     public Integer getIdNotificacion() { return idNotificacion; }
     public void setIdNotificacion(Integer idNotificacion) { this.idNotificacion = idNotificacion; }
 

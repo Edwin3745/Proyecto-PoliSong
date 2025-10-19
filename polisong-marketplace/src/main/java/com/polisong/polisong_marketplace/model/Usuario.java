@@ -9,9 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "usuario")
 public class Usuario {
 
-    // --------------------
     // VARIABLES
-    // --------------------
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
@@ -48,14 +47,13 @@ public class Usuario {
     @JsonIgnore
     private List<Correo> correos;
 
-    // --------------------
+  
     // CONSTRUCTOR
-    // --------------------
+ 
     public Usuario() {}
 
-    // --------------------
     // GETTERS Y SETTERS
-    // --------------------
+
     public Integer getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
 

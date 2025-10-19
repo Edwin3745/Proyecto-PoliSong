@@ -7,9 +7,8 @@ import java.time.LocalDateTime;
 @Table(name = "valoracion")
 public class Valoracion {
 
-    // --------------------
     // VARIABLES
-    // --------------------
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_valoracion")
@@ -35,14 +34,12 @@ public class Valoracion {
     @Column(name = "fecha")
     private LocalDateTime fecha;
 
-    // --------------------
     // CONSTRUCTOR
-    // --------------------
+
     public Valoracion() {}
 
-    // --------------------
     // GETTERS Y SETTERS
-    // --------------------
+
     public Integer getIdValoracion() { return idValoracion; }
     public void setIdValoracion(Integer idValoracion) { this.idValoracion = idValoracion; }
 

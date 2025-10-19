@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "rol")
 public class Rol {
 
-    // --------------------
+  
     // VARIABLES
-    // --------------------
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_rol")
@@ -27,14 +27,13 @@ public class Rol {
     @JsonIgnore
     private List<Usuario> usuarios;
 
-    // --------------------
+    
     // CONSTRUCTOR
-    // --------------------
+ 
     public Rol() {}
 
-    // --------------------
     // GETTERS Y SETTERS
-    // --------------------
+
     public Integer getIdRol() { return idRol; }
     public void setIdRol(Integer idRol) { this.idRol = idRol; }
 

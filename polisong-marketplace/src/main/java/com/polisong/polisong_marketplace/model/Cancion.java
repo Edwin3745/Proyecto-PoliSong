@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "cancion")
 public class Cancion {
 
-    // --------------------
+    
     // VARIABLES
-    // --------------------
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cancion")
@@ -35,14 +35,13 @@ public class Cancion {
     @JsonIgnore
     private List<DetallePedido> detalles;
 
-    // --------------------
+   
     // CONSTRUCTOR
-    // --------------------
+   
     public Cancion() {}
 
-    // --------------------
     // GETTERS Y SETTERS
-    // --------------------
+   
     public Integer getIdCancion() { return idCancion; }
     public void setIdCancion(Integer idCancion) { this.idCancion = idCancion; }
 

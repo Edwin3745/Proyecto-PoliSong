@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "vinilo")
 public class Vinilo {
 
-    // --------------------
     // VARIABLES
-    // --------------------
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_vinilo")

@@ -6,9 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "detallepedido")
 public class DetallePedido {
 
-    // --------------------
     // VARIABLES
-    // --------------------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle")
@@ -35,14 +33,13 @@ public class DetallePedido {
     @Column(name = "subtotal")
     private Double subtotal;
 
-    // --------------------
+
     // CONSTRUCTOR
-    // --------------------
+
     public DetallePedido() {}
 
-    // --------------------
     // GETTERS Y SETTERS
-    // --------------------
+
     public Integer getIdDetalle() { return idDetalle; }
     public void setIdDetalle(Integer idDetalle) { this.idDetalle = idDetalle; }
 

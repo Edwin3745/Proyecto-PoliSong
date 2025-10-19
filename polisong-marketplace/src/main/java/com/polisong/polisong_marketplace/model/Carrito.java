@@ -7,9 +7,8 @@ import java.util.List;
 @Table(name = "carrito")
 public class Carrito {
 
-    // --------------------
     // VARIABLES
-    // --------------------
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_carrito")
@@ -35,14 +34,11 @@ public class Carrito {
     )
     private List<Cancion> canciones;
 
-    // --------------------
     // CONSTRUCTOR
-    // --------------------
     public Carrito() {}
 
-    // --------------------
+
     // GETTERS Y SETTERS
-    // --------------------
     public Integer getIdCarrito() { return idCarrito; }
     public void setIdCarrito(Integer idCarrito) { this.idCarrito = idCarrito; }
 

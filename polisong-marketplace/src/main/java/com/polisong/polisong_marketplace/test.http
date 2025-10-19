@@ -1,0 +1,244 @@
+########################################
+### 🧍 USUARIOS
+########################################
+
+### Obtener todos los usuarios
+GET http://localhost:8080/api/usuarios
+
+### Crear un usuario
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Carlos Pérez",
+  "correo": "carlos@example.com",
+  "contrasena": "12345",
+  "cedula": "10101010",
+  "activo": true
+}
+
+### Obtener usuario por ID
+GET http://localhost:8080/api/usuarios/5
+
+### Actualizar usuario
+PUT http://localhost:8080/api/usuarios/1
+Content-Type: application/json
+
+{
+  "nombre": "Carlos Pérez Actualizado",
+  "correo": "carlos@example.com",
+  "contrasena": "54321",
+  "cedula": "10101010",
+  "activo": true
+}
+
+### Eliminar usuario
+DELETE http://localhost:8080/api/usuarios/4
+
+
+########################################
+### 👤 ROLES
+########################################
+
+### Listar roles
+GET http://localhost:8080/api/roles
+
+### Crear rol
+POST http://localhost:8080/api/roles
+Content-Type: application/json
+
+{
+  "nombre": "ADMIN",
+  "descripcion": "Administrador general del sistema"
+}
+
+
+########################################
+### 🏪 PROVEEDORES
+########################################
+
+### Listar proveedores
+GET http://localhost:8080/api/proveedores
+
+### Crear proveedor
+POST http://localhost:8080/api/proveedores
+Content-Type: application/json
+
+{
+  "aliasContacto": "Discos Bogotá",
+  "contratoDisqueras": "Contrato ABC 2024",
+  "usuario": { "idUsuario": 1 }
+}
+
+
+########################################
+### 💿 VINILOS
+########################################
+
+### Listar vinilos
+GET http://localhost:8080/api/vinilos
+
+### Crear vinilo
+POST http://localhost:8080/api/vinilos
+Content-Type: application/json
+
+{
+  "nombre": "Abbey Road",
+  "tipo": "VINILO",
+  "artista": "The Beatles",
+  "anioLanzamiento": 1969,
+  "precio": 120.5,
+  "cantidadDisponible": 20,
+  "estado": "Activo",
+  "proveedor": { "idProveedor": 1 }
+}
+
+
+########################################
+### 🎵 CANCIONES
+########################################
+
+### Listar canciones
+GET http://localhost:8080/api/canciones
+
+### Crear canción
+POST http://localhost:8080/api/canciones
+Content-Type: application/json
+
+{
+  "nombreCancion": "Bohemian Rhapsody",
+  "precio": 3.99,
+  "duracion": 5.55,
+  "tamanio": 8.2,
+  "calidadKbps": 320
+}
+
+
+########################################
+### 📦 PEDIDOS
+########################################
+
+### Listar pedidos
+GET http://localhost:8080/api/pedidos
+
+### Crear pedido
+POST http://localhost:8080/api/pedidos
+Content-Type: application/json
+
+{
+  "fecha": "2025-10-19T00:00:00Z",
+  "observacion": "Pedido inicial",
+  "usuario": { "idUsuario": 1 }
+}
+
+
+########################################
+### ⭐ VALORACIONES
+########################################
+
+### Listar valoraciones
+GET http://localhost:8080/api/valoraciones
+
+### Crear valoracion
+POST http://localhost:8080/api/valoraciones
+Content-Type: application/json
+
+{
+  "puntuacion": 5,
+  "comentario": "Excelente calidad del producto",
+  "fecha": "2025-10-19T00:00:00Z",
+  "usuario": { "idUsuario": 1 },
+  "producto": { "idProducto": 1 }
+}
+
+
+########################################
+### 🔔 NOTIFICACIONES
+########################################
+
+### Listar notificaciones
+GET http://localhost:8080/api/notificaciones
+
+### Crear notificación
+POST http://localhost:8080/api/notificaciones
+Content-Type: application/json
+
+{
+  "mensaje": "Tu pedido fue confirmado",
+  "fechaEnvio": "2025-10-19T00:00:00Z",
+  "estado": "No leída",
+  "usuario": { "idUsuario": 1 }
+}
+
+
+########################################
+### 🗂️ CATÁLOGOS
+########################################
+
+### Listar catálogos
+GET http://localhost:8080/api/catalogos
+
+### Crear catálogo
+POST http://localhost:8080/api/catalogos
+Content-Type: application/json
+
+{
+  "nombre": "Vinilos Clásicos",
+  "descripcion": "Colección de vinilos legendarios"
+}
+
+
+########################################
+### 🛒 CARRITOS
+########################################
+
+### Listar carritos
+GET http://localhost:8080/api/carritos
+
+### Crear carrito
+POST http://localhost:8080/api/carritos
+Content-Type: application/json
+
+{
+  "usuario": { "idUsuario": 1 },
+  "productos": [
+    { "idProducto": 1 }
+  ]
+}
+
+
+########################################
+### 💳 MÉTODOS DE PAGO
+########################################
+
+### Listar métodos de pago
+GET http://localhost:8080/api/metodos-pago
+
+### Crear método de pago
+POST http://localhost:8080/api/metodos-pago
+Content-Type: application/json
+
+{
+  "nombre": "Tarjeta de Crédito",
+  "descripcion": "Pago con tarjeta Visa o MasterCard"
+}
+
+
+########################################
+### 📊 REPORTES
+########################################
+
+### Listar reportes
+GET http://localhost:8080/api/reportes
+
+### Crear reporte
+POST http://localhost:8080/api/reportes
+Content-Type: application/json
+
+{
+  "tipo": "VENTAS",
+  "fechaGeneracion": "2025-10-19T00:00:00Z",
+  "descripcion": "Reporte mensual de ventas",
+  "totalGenerado": 12500.75,
+  "administrador": { "idUsuario": 1 }
+}

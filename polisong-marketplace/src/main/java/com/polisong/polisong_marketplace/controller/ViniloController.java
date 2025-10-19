@@ -2,59 +2,47 @@ package com.polisong.polisong_marketplace.controller;
 
 import com.polisong.polisong_marketplace.model.Vinilo;
 import com.polisong.polisong_marketplace.service.ViniloService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/productos")
+@RequestMapping("/api/vinilos")
 @CrossOrigin(origins = "*")
 public class ViniloController {
 
-    @Autowired
-    private ViniloService productoService;
+    private final ViniloService viniloService;
 
-    // Listar todos los productos
+    public ViniloController(ViniloService viniloService) {
+        this.viniloService = viniloService;
+    }
+
     @GetMapping
-    public List<Vinilo> listarTodos() {
-        return productoService.listarTodos();
+    public List<Vinilo> listar() {
+        return viniloService.listar();
     }
 
-    // Buscar por ID
     @GetMapping("/{id}")
-    public Optional<Vinilo> buscarPorId(@PathVariable int id) {
-        return productoService.buscarPorId(id);
+    public Vinilo obtenerPorId(@PathVariable Integer id) {
+        return viniloService.buscarPorId(id);
     }
 
-    // Buscar por nombre
-    @GetMapping("/nombre/{nombre}")
-    public List<Vinilo> buscarPorNombre(@PathVariable String nombre) {
-        return productoService.buscarPorNombre(nombre);
-    }
-
-    // Buscar por tipo (VINILO o MP3)
-    @GetMapping("/tipo/{tipo}")
-    public List<Vinilo> buscarPorTipo(@PathVariable String tipo) {
-        return productoService.buscarPorTipo(tipo);
-    }
-
-    // Listar productos activos
-    @GetMapping("/activos")
-    public List<Vinilo> listarActivos() {
-        return productoService.listarActivos();
-    }
-
-    // Crear o actualizar producto
     @PostMapping
-    public Vinilo guardar(@RequestBody Vinilo producto) {
-        return productoService.guardar(producto);
+    public Vinilo guardar(@RequestBody Vinilo vinilo) {
+        return viniloService.guardar(vinilo);
     }
 
-    // Eliminar producto
+    @PutMapping("/{id}")
+    public Vinilo actualizar(@PathVariable Integer id, @RequestBody Vinilo vinilo) {
+        Vinilo existente = viniloService.buscarPorId(id);
+        if (existente != null) {
+            vinilo.setIdVinilo(id);
+            return viniloService.guardar(vinilo);
+        }
+        return null;
+    }
+
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable int id) {
-        productoService.eliminar(id);
+    public void eliminar(@PathVariable Integer id) {
+        viniloService.eliminar(id);
     }
 }

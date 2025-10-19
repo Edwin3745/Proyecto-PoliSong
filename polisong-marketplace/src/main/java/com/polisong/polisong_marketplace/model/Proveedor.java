@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "proveedor")
 public class Proveedor {
 
-    // --------------------
     // VARIABLES
-    // --------------------
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_proveedor")
@@ -30,14 +29,13 @@ public class Proveedor {
     @JsonIgnore
     private List<Vinilo> vinilos;
 
-    // --------------------
     // CONSTRUCTOR
-    // --------------------
+  
     public Proveedor() {}
 
-    // --------------------
+   
     // GETTERS Y SETTERS
-    // --------------------
+   
     public Integer getIdProveedor() { return idProveedor; }
     public void setIdProveedor(Integer idProveedor) { this.idProveedor = idProveedor; }
 

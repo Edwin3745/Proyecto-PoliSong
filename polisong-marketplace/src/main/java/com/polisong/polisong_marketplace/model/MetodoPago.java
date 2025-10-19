@@ -6,9 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "metodopago")
 public class MetodoPago {
 
-    // --------------------
     // VARIABLES
-    // --------------------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_metodopago")
@@ -20,14 +18,12 @@ public class MetodoPago {
     @Column(name = "descripcion", length = 255)
     private String descripcion;
 
-    // --------------------
+  
     // CONSTRUCTOR
-    // --------------------
+
     public MetodoPago() {}
 
-    // --------------------
     // GETTERS Y SETTERS
-    // --------------------
     public Integer getIdMetodoPago() { return idMetodoPago; }
     public void setIdMetodoPago(Integer idMetodoPago) { this.idMetodoPago = idMetodoPago; }
 
