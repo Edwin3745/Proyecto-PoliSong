@@ -1,35 +1,32 @@
 package com.polisong.polisong_marketplace.service;
 
 import com.polisong.polisong_marketplace.model.Usuario;
+import com.polisong.polisong_marketplace.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
-    private final Map<String, Usuario> store = new ConcurrentHashMap<>();
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public List<Usuario> listarUsuarios() {
-        return new ArrayList<>(store.values());
+    public List<Usuario> listar() {
+        return usuarioRepository.findAll();
     }
 
-    public Usuario guardarUsuario(Usuario usuario) {
-        if (usuario == null) {
-            return null;
-        }
-        String cedula = usuario.getCedula();
-        if (cedula == null || cedula.isEmpty()) {
-            // generate a simple id if cedula not provided
-            cedula = UUID.randomUUID().toString();
-            usuario.setCedula(cedula);
-        }
-        store.put(cedula, usuario);
-        return usuario;
+    public Usuario guardar(Usuario usuario) {
+        return usuarioRepository.save(usuario);
     }
 
-    public Optional<Usuario> buscarPorCedula(String cedula) {
-        return Optional.ofNullable(store.get(cedula));
+    public Optional<Usuario> buscarPorCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo);
+    }
+
+    public void eliminar(Integer id) {
+        usuarioRepository.deleteById(id);
     }
 }

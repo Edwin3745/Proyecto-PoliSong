@@ -12,9 +12,6 @@ public class Cancion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCancion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_disc")
-    
     private String nombreCancion;
     private double precio;
     private double duracion;
