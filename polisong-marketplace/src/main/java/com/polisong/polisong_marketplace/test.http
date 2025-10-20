@@ -1,244 +1,153 @@
-########################################
-### 🧍 USUARIOS
-########################################
+###  Registrar un nuevo usuario
+POST http://localhost:8080/api/usuarios/registrar
+Content-Type: application/json
 
-### Obtener todos los usuarios
+{
+  "nombre": "Juan Pérez",
+  "correo": "juan@mail.com",
+  "contrasena": "1234",
+  "cedula": "10203040",
+  "activo": true
+}
+
+###  Registrar otro usuario
+POST http://localhost:8080/api/usuarios/registrar
+Content-Type: application/json
+
+{
+  "nombre": "María Gómez",
+  "correo": "maria@mail.com",
+  "contrasena": "abcd",
+  "cedula": "555888999",
+  "activo": true
+}
+
+###  Iniciar sesión (usuario existente)
+POST http://localhost:8080/api/usuarios/login?correo=juan@mail.com&contrasena=1234
+
+
+###  Cerrar sesión
+POST http://localhost:8080/api/usuarios/logout?correo=juan@mail.com
+
+### Cambiar contraseña
+PUT http://localhost:8080/api/usuarios/9/cambiarContrasena?contrasenaActual=1234&nuevaContrasena=5678
+
+### Listar todos los usuarios
 GET http://localhost:8080/api/usuarios
 
-### Crear un usuario
-POST http://localhost:8080/api/usuarios
-Content-Type: application/json
+###
 
-{
-  "nombre": "Carlos Pérez",
-  "correo": "carlos@example.com",
-  "contrasena": "12345",
-  "cedula": "10101010",
-  "activo": true
-}
-
-### Obtener usuario por ID
-GET http://localhost:8080/api/usuarios/5
-
-### Actualizar usuario
-PUT http://localhost:8080/api/usuarios/1
-Content-Type: application/json
-
-{
-  "nombre": "Carlos Pérez Actualizado",
-  "correo": "carlos@example.com",
-  "contrasena": "54321",
-  "cedula": "10101010",
-  "activo": true
-}
+### Buscar usuario por ID
+GET http://localhost:8080/api/usuarios/12
 
 ### Eliminar usuario
-DELETE http://localhost:8080/api/usuarios/4
+DELETE http://localhost:8080/api/usuarios/9
 
 
-########################################
-### 👤 ROLES
-########################################
-
-### Listar roles
-GET http://localhost:8080/api/roles
-
-### Crear rol
-POST http://localhost:8080/api/roles
+### Registrar nueva venta
+POST http://localhost:8080/api/ventas/registrar
 Content-Type: application/json
 
 {
-  "nombre": "ADMIN",
-  "descripcion": "Administrador general del sistema"
+  "estado": "Pendiente",
+  "ingresoTotal": 120000,
+  "fechaVenta": "2025-10-19",
+  "pedido": {
+    "idPedido": 1
+  },
+  "proveedor": {
+    "idProveedor": 2
+  }
 }
 
-
-########################################
-### 🏪 PROVEEDORES
-########################################
-
-### Listar proveedores
-GET http://localhost:8080/api/proveedores
-
-### Crear proveedor
-POST http://localhost:8080/api/proveedores
-Content-Type: application/json
-
-{
-  "aliasContacto": "Discos Bogotá",
-  "contratoDisqueras": "Contrato ABC 2024",
-  "usuario": { "idUsuario": 1 }
-}
+### Consultar todas las ventas
+GET http://localhost:8080/api/ventas/consultar
 
 
-########################################
-### 💿 VINILOS
-########################################
+###  Buscar venta por ID
+GET http://localhost:8080/api/ventas/1
 
-### Listar vinilos
-GET http://localhost:8080/api/vinilos
-
-### Crear vinilo
-POST http://localhost:8080/api/vinilos
-Content-Type: application/json
-
-{
-  "nombre": "Abbey Road",
-  "tipo": "VINILO",
-  "artista": "The Beatles",
-  "anioLanzamiento": 1969,
-  "precio": 120.5,
-  "cantidadDisponible": 20,
-  "estado": "Activo",
-  "proveedor": { "idProveedor": 1 }
-}
+###  Actualizar estado de una venta
+PUT http://localhost:8080/api/ventas/1/estado?nuevoEstado=Entregado
 
 
-########################################
-### 🎵 CANCIONES
-########################################
+### Actualizar proveedor de una venta
+PUT http://localhost:8080/api/ventas/1/proveedor?idProveedor=3
 
-### Listar canciones
-GET http://localhost:8080/api/canciones
+### Eliminar venta
+DELETE http://localhost:8080/api/ventas/6
 
-### Crear canción
-POST http://localhost:8080/api/canciones
-Content-Type: application/json
-
-{
-  "nombreCancion": "Bohemian Rhapsody",
-  "precio": 3.99,
-  "duracion": 5.55,
-  "tamanio": 8.2,
-  "calidadKbps": 320
-}
-
-
-########################################
-### 📦 PEDIDOS
-########################################
-
-### Listar pedidos
-GET http://localhost:8080/api/pedidos
-
-### Crear pedido
+### Crear nuevo pedido
 POST http://localhost:8080/api/pedidos
 Content-Type: application/json
 
 {
-  "fecha": "2025-10-19T00:00:00Z",
+  "usuario": { "idUsuario": 9},
   "observacion": "Pedido inicial",
-  "usuario": { "idUsuario": 1 }
+  "fecha": "2025-10-19T10:00:00"
 }
 
-
-########################################
-### ⭐ VALORACIONES
-########################################
-
-### Listar valoraciones
-GET http://localhost:8080/api/valoraciones
-
-### Crear valoracion
-POST http://localhost:8080/api/valoraciones
-Content-Type: application/json
-
-{
-  "puntuacion": 5,
-  "comentario": "Excelente calidad del producto",
-  "fecha": "2025-10-19T00:00:00Z",
-  "usuario": { "idUsuario": 1 },
-  "producto": { "idProducto": 1 }
-}
+###  Listar todos los pedidos
+GET http://localhost:8080/api/pedidos
 
 
-########################################
-### 🔔 NOTIFICACIONES
-########################################
+###  Buscar pedido por ID
+GET http://localhost:8080/api/pedidos/1
 
-### Listar notificaciones
-GET http://localhost:8080/api/notificaciones
 
-### Crear notificación
+### Calcular total de pedido
+GET http://localhost:8080/api/pedidos/1/total
+
+###  Actualizar estado del pedido
+PUT http://localhost:8080/api/pedidos/1/estado?nuevoEstado=Enviado
+
+###  Cancelar pedido
+PUT http://localhost:8080/api/pedidos/1/cancelar
+
+###  Eliminar pedido
+DELETE http://localhost:8080/api/pedidos/12
+### Crear una nueva notificación
 POST http://localhost:8080/api/notificaciones
 Content-Type: application/json
 
 {
-  "mensaje": "Tu pedido fue confirmado",
-  "fechaEnvio": "2025-10-19T00:00:00Z",
+  "mensaje": "Tu pedido ha sido despachado.",
   "estado": "No leída",
-  "usuario": { "idUsuario": 1 }
+  "usuario": { "idUsuario": 12 }
 }
 
+### Listar todas las notificaciones
+GET http://localhost:8080/api/notificaciones
+### Buscar notificación por ID
+GET http://localhost:8080/api/notificaciones/12
 
-########################################
-### 🗂️ CATÁLOGOS
-########################################
-
-### Listar catálogos
-GET http://localhost:8080/api/catalogos
-
-### Crear catálogo
-POST http://localhost:8080/api/catalogos
+### Enviar notificación genérica
+POST http://localhost:8080/api/notificaciones/enviar?mensaje=Tu%20pedido%20est%C3%A1%20en%20camino
 Content-Type: application/json
 
 {
-  "nombre": "Vinilos Clásicos",
-  "descripcion": "Colección de vinilos legendarios"
+  "idUsuario": 12,
+  "nombre": "Juan Pérez"
 }
-
-
-########################################
-### 🛒 CARRITOS
-########################################
-
-### Listar carritos
-GET http://localhost:8080/api/carritos
-
-### Crear carrito
-POST http://localhost:8080/api/carritos
+### Notificar cambio en pedido
+POST http://localhost:8080/api/notificaciones/pedido?estado=Entregado
 Content-Type: application/json
 
 {
-  "usuario": { "idUsuario": 1 },
-  "productos": [
-    { "idProducto": 1 }
-  ]
+  "idUsuario": 12,
+  "nombre": "Juan Pérez"
 }
 
 
-########################################
-### 💳 MÉTODOS DE PAGO
-########################################
-
-### Listar métodos de pago
-GET http://localhost:8080/api/metodos-pago
-
-### Crear método de pago
-POST http://localhost:8080/api/metodos-pago
+###  Notificar promoción
+POST http://localhost:8080/api/notificaciones/promocion?descripcion=Descuento%20del%2050%25%20en%20vinilos
 Content-Type: application/json
 
 {
-  "nombre": "Tarjeta de Crédito",
-  "descripcion": "Pago con tarjeta Visa o MasterCard"
+  "idUsuario": 1,
+  "nombre": "María Gómez"
 }
 
 
-########################################
-### 📊 REPORTES
-########################################
-
-### Listar reportes
-GET http://localhost:8080/api/reportes
-
-### Crear reporte
-POST http://localhost:8080/api/reportes
-Content-Type: application/json
-
-{
-  "tipo": "VENTAS",
-  "fechaGeneracion": "2025-10-19T00:00:00Z",
-  "descripcion": "Reporte mensual de ventas",
-  "totalGenerado": 12500.75,
-  "administrador": { "idUsuario": 1 }
-}
+###  Simular envío de correo
+POST http://localhost:8080/api/notificaciones/correo?email=cliente@mail.com&asunto=Oferta&mensaje=Promoci%C3%B3n%20disponible

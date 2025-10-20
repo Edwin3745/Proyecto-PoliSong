@@ -10,7 +10,7 @@ public class Cancion {
 
     
     // VARIABLES
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cancion")
