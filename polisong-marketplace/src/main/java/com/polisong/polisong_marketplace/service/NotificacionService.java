@@ -4,7 +4,6 @@ import com.polisong.polisong_marketplace.model.Notificacion;
 import com.polisong.polisong_marketplace.model.Usuario;
 import com.polisong.polisong_marketplace.repository.NotificacionRepository;
 import org.springframework.stereotype.Service;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,7 +42,7 @@ public class NotificacionService {
         notificacion.setMensaje(mensaje);
         notificacion.setEstado("No leída");
         notificacionRepository.save(notificacion);
-        System.out.println("📩 Notificación enviada a: " + usuario.getNombre());
+        System.out.println("Notificación enviada a: " + usuario.getNombre());
     }
 
     // 2️ Notificar cambio en pedido
