@@ -40,9 +40,24 @@ public class PedidoController {
         }
         return null;
     }
-
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Integer id) {
         pedidoService.eliminar(id);
+    }
+    //Cancelar pedido
+    @PutMapping("/{id}/cancelar")
+    public Pedido cancelar(@PathVariable Integer id) {
+        return pedidoService.cancelarPedido(id);
+    }
+      //Actualizar estado del pedido
+    @PutMapping("/{id}/estado")
+    public Pedido actualizarEstado(@PathVariable Integer id, @RequestParam String nuevoEstado) {
+        return pedidoService.actualizarEstado(id, nuevoEstado);
+    }
+    // Calcular total del pedido
+    @GetMapping("/{id}/total")
+    public double calcularTotal(@PathVariable Integer id) {
+        Pedido pedido = pedidoService.buscarPorId(id);
+        return pedido != null ? pedidoService.calcularTotal(pedido) : 0.0;
     }
 }

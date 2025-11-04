@@ -1,6 +1,7 @@
 package com.polisong.polisong_marketplace.controller;
 
 import com.polisong.polisong_marketplace.model.Notificacion;
+import com.polisong.polisong_marketplace.model.Usuario;
 import com.polisong.polisong_marketplace.service.NotificacionService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -44,5 +45,34 @@ public class NotificacionController {
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Integer id) {
         notificacionService.eliminar(id);
+    }
+    //Enviar notificacion
+     @PostMapping("/enviar")
+    public String enviarNotificacion(@RequestBody Usuario usuario, @RequestParam String mensaje) {
+        notificacionService.enviarNotificacion(usuario, mensaje);
+        return "Notificación enviada a " + usuario.getNombre();
+    }
+
+    // Notificar cambio de pedido
+    @PostMapping("/pedido")
+    public String notificarCambioPedido(@RequestBody Usuario usuario, @RequestParam String estado) {
+        notificacionService.notificarCambioPedido(usuario, estado);
+        return "Notificación de cambio de pedido enviada.";
+    }
+
+    // Notificar promocion
+    @PostMapping("/promocion")
+    public String notificarPromocion(@RequestBody Usuario usuario, @RequestParam String descripcion) {
+        notificacionService.notificarPromocion(usuario, descripcion);
+        return "Promoción notificada a " + usuario.getNombre();
+    }
+
+    // Simular envio de correo
+    @PostMapping("/correo")
+    public String enviarCorreo(@RequestParam String email,
+                               @RequestParam String asunto,
+                               @RequestParam String mensaje) {
+        notificacionService.enviarCorreoNotificacion(email, asunto, mensaje);
+        return "Correo enviado correctamente (simulado).";
     }
 }
