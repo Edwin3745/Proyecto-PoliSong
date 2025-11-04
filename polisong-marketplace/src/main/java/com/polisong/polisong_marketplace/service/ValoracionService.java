@@ -29,4 +29,37 @@ public class ValoracionService {
     public void eliminar(Integer id) {
         valoracionRepository.deleteById(id);
     }
+    // 1️ Crear una valoración para un pedido
+public Valoracion crearValoracion(Valoracion valoracion) {
+    valoracion.setFecha(java.time.LocalDateTime.now());
+    return valoracionRepository.save(valoracion);
+}
+
+// 2️ Actualizar comentario o calificación
+public Valoracion actualizarValoracion(Integer id, Integer nuevaCalificacion, String nuevoComentario) {
+    Valoracion valoracion = valoracionRepository.findById(id).orElse(null);
+    if (valoracion != null) {
+        valoracion.setCalificacion(nuevaCalificacion);
+        valoracion.setComentario(nuevoComentario);
+        return valoracionRepository.save(valoracion);
+    }
+    return null;
+}
+
+// 3️ Calcular promedio de calificación general
+public double calcularPromedioCalificaciones() {
+    List<Valoracion> valoraciones = valoracionRepository.findAll();
+    if (valoraciones.isEmpty()) return 0;
+    double total = valoraciones.stream().mapToDouble(Valoracion::getCalificacion).sum();
+    return total / valoraciones.size();
+}
+
+// 4️ Listar valoraciones recientes (últimos 7 días)
+public List<Valoracion> listarValoracionesRecientes() {
+    java.time.LocalDateTime haceUnaSemana = java.time.LocalDateTime.now().minusDays(7);
+    return valoracionRepository.findAll().stream()
+            .filter(v -> v.getFecha().isAfter(haceUnaSemana))
+            .toList();
+}
+
 }
