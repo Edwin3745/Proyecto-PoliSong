@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/> 
 	</parent>
 	<groupId>com.polisong</groupId>
 	<artifactId>polisong-marketplace</artifactId>
@@ -31,7 +31,7 @@
 	</properties>
 	<dependencies>
 
-		<!-- Actuator (opcional) -->
+		<!-- Actuator  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -81,7 +81,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Lombok (provided) -->
+		<!-- Lombok  -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -99,7 +99,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
 
 

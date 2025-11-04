@@ -65,6 +65,21 @@ public class ViniloService {
     public List<Vinilo> listarVinilos() {
         return viniloRepository.findAll();
     }
+    public List<Vinilo> listar() {
+        return viniloRepository.findAll();
+    }
+
+    public Vinilo buscarPorId(Integer id) {
+        return viniloRepository.findById(id).orElse(null);
+    }
+
+    public Vinilo guardar(Vinilo vinilo) {
+        return viniloRepository.save(vinilo);
+    }
+
+    public void eliminar(Integer id) {
+        viniloRepository.deleteById(id);
+    }
 }
 
 

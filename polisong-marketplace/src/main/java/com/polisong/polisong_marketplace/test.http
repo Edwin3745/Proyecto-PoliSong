@@ -3,10 +3,10 @@ POST http://localhost:8080/api/usuarios/registrar
 Content-Type: application/json
 
 {
-  "nombre": "Juan Pérez",
-  "correo": "juan@mail.com",
-  "contrasena": "1234",
-  "cedula": "10203040",
+  "nombre": "Sara",
+  "correo": "sara@mail.com",
+  "contrasena": "12234",
+  "cedula": "102203040",
   "activo": true
 }
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 
 ###  Iniciar sesión (usuario existente)
-POST http://localhost:8080/api/usuarios/login?correo=juan@mail.com&contrasena=1234
+POST http://localhost:8080/api/usuarios/login?correo=j@mail.com&contrasena=1234
 
 
 ###  Cerrar sesión

@@ -17,7 +17,6 @@ public class VentaController {
         this.ventaService = ventaService;
     }
 
-  
     @GetMapping
     public List<Venta> listar() {
         return ventaService.listar();
@@ -33,26 +32,23 @@ public class VentaController {
         return ventaService.registrarVenta(venta);
     }
 
-    // Consultar ventas 
     @GetMapping("/consultar")
     public List<Venta> consultarVentas() {
         return ventaService.consultarVentas();
     }
-    // Actualizar estado de venta
+
     @PutMapping("/{id}/estado")
     public String actualizarEstado(@PathVariable Integer id, @RequestParam String nuevoEstado) {
         return ventaService.actualizarEstadoVenta(id, nuevoEstado);
     }
-    // Actualizar proveedor de venta
+
     @PutMapping("/{id}/proveedor")
     public String actualizarProveedor(@PathVariable Integer id, @RequestParam Integer idProveedor) {
         return ventaService.actualizarVentaProveedor(id, idProveedor);
     }
 
-    // Eliminar venta
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Integer id) {
         ventaService.eliminar(id);
     }
 }
-

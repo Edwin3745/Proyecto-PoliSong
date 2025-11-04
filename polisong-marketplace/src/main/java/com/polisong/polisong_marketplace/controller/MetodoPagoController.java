@@ -31,15 +31,6 @@ public class MetodoPagoController {
         return metodoPagoService.guardar(metodoPago);
     }
 
-    @PutMapping("/{id}")
-    public MetodoPago actualizar(@PathVariable Integer id, @RequestBody MetodoPago metodoPago) {
-        MetodoPago existente = metodoPagoService.buscarPorId(id);
-        if (existente != null) {
-            metodoPago.setIdMetodoPago(id);
-            return metodoPagoService.guardar(metodoPago);
-        }
-        return null;
-    }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Integer id) {
