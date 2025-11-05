@@ -30,6 +30,10 @@ public class UsuarioService {
     public void eliminar(Integer id) {
         usuarioRepository.deleteById(id);
     }
+    public Usuario obtenerPorCorreo(String correo) {
+    return usuarioRepository.findByCorreo(correo).orElse(null);
+}
+
 
        // 🔹 Registrar nuevo usuario
     public String registrar(Usuario nuevo) {
