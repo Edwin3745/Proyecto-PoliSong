@@ -49,4 +49,8 @@ public class Venta {
 
     public Proveedor getProveedor() { return proveedor; }
     public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+    public Object getVinilos() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getVinilos'");
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 public class VentaService {
@@ -70,4 +71,13 @@ public class VentaService {
             return "Venta no encontrada con ID: " + idVenta;
         }
     }
+    //Reporte de ventas por proveedor o general
+       public List<Venta> generarReporteVentas(Integer idProveedor) {
+        if (idProveedor != null) {
+            return ventaRepository.findByProveedor_IdProveedor(idProveedor);
+        } else {
+            return ventaRepository.findAll(); // reporte general
+        }
+    }
+    
 }
