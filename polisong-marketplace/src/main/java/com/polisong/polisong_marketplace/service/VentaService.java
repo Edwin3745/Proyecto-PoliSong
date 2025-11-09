@@ -79,5 +79,21 @@ public class VentaService {
             return ventaRepository.findAll(); // reporte general
         }
     }
+    //Notificar venta al proveedor desde la pagina
+     public String notificarProveedorDesdePagina(Venta venta) {
+        if (venta.getProveedor() == null) {
+            return "⚠ No se pudo notificar: la venta no tiene proveedor asignado.";
+        }
+
+        String mensaje = "Notificación: Se ha registrado una nueva venta.\n" +
+                "Producto: " + (venta.getIdVenta() != null ? ((Venta) venta.getVinilos()).getVinilos() : "Desconocido") + "\n" +
+                "Proveedor: " + venta.getProveedor().getUsuario() + "\n" +
+                "Fecha: " + venta.getFechaVenta() + "\n" +
+                "Estado: " + venta.getEstado();
+
+        
+        System.out.println(mensaje); // visible en consola del backend
+        return mensaje;
+    }
     
 }
