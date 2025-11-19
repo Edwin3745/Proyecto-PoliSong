@@ -101,5 +101,10 @@ public String eliminarUsuario(Integer idUsuario) {
         return "El usuario no existe.";
     }
 }
+// 🔹 Buscar usuario por correo electrónico
+public Usuario buscarPorEmail(String correo) {
+    return usuarioRepository.findByCorreo(correo).orElse(null);
+}
+
 }
 
