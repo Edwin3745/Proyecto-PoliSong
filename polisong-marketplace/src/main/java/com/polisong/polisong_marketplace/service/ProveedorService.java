@@ -29,4 +29,23 @@ public class ProveedorService {
     public void eliminar(Integer id) {
         proveedorRepository.deleteById(id);
     }
+// 1️ Registrar proveedor con estado "Activo"
+public Proveedor registrarProveedor(Proveedor proveedor) {
+    proveedor.setEstado("Activo"); 
+    return proveedorRepository.save(proveedor);
+}
+
+// 2️ Actualizar datos del proveedor
+public Proveedor actualizarProveedor(Integer id, Proveedor nuevosDatos) {
+    Proveedor proveedor = proveedorRepository.findById(id).orElse(null);
+    if (proveedor != null) {
+        proveedor.setNombre(nuevosDatos.getNombre());
+        proveedor.setTelefono(nuevosDatos.getTelefono());
+        proveedor.setDireccion(nuevosDatos.getDireccion());
+        proveedor.setEmail(nuevosDatos.getEmail());
+        return proveedorRepository.save(proveedor);
+    }
+    return null;
+}
+
 }
