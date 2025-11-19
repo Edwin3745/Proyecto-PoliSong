@@ -89,4 +89,17 @@ public class UsuarioService {
         }
         return "Usuario no encontrado.";
     }
+
+// 🔹 Eliminar un usuario por ID
+public String eliminarUsuario(Integer idUsuario) {
+    Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
+
+    if (usuarioOpt.isPresent()) {
+        usuarioRepository.deleteById(idUsuario);
+        return "Usuario eliminado correctamente.";
+    } else {
+        return "El usuario no existe.";
+    }
 }
+}
+
