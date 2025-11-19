@@ -48,4 +48,23 @@ public Proveedor actualizarProveedor(Integer id, Proveedor nuevosDatos) {
     return null;
 }
 
+// 3️ Desactivar proveedor (sin eliminarlo)
+public boolean desactivarProveedor(Integer id) {
+    Proveedor proveedor = proveedorRepository.findById(id).orElse(null);
+    if (proveedor != null) {
+        proveedor.setEstado("Inactivo"); 
+        proveedorRepository.save(proveedor);
+        return true;
+    }
+    return false;
+}
+
+// 4️ Listar proveedores activos
+public List<Proveedor> listarProveedoresActivos() {
+    return proveedorRepository.findAll()
+            .stream()
+            .filter(p -> p.getEstado().equalsIgnoreCase("Activo"))
+            .toList();
+}
+
 }
