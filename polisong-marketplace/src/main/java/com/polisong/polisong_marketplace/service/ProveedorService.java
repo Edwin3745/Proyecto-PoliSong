@@ -88,6 +88,11 @@ public class ProveedorService {
     public void eliminar(Integer id) {
         proveedorRepository.deleteById(id);
     }
+    // Métodos legacy removidos (estado/nombre/telefono/direccion/email) porque el modelo Proveedor actual
+    // sólo posee: idProveedor, aliasContacto, correo, contrasena, rol, vinilos.
+    // Si se requiere reintroducir gestión de estado o datos de contacto extendidos,
+    // actualizar la entidad y repositorio antes de restaurar funcionalidad.
+
 
     // Ver productos del proveedor (solo vinilos, ya que Cancion no tiene relación con proveedor)
     public List<Vinilo> verProductos(Integer idProveedor) {

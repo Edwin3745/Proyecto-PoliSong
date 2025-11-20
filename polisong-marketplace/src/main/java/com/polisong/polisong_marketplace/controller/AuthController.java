@@ -29,13 +29,8 @@ public class AuthController {
 
     @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@RequestBody RegistroRequest request) {
-        if (request == null || request.correoPrincipal == null || request.contrasena == null || request.nombreUsuario == null || request.rol == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", "Datos incompletos."));
-        }
-        // Verificar correo existente
-        // Para proveedores ahora se validará contra tabla proveedor; usuarios contra usuario
-        if (roleIsUser(request.rol) && usuarioService.buscarPorEmail(request.correoPrincipal) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("mensaje", "El correo ya está registrado como usuario."));
+        if (request == null || request.rol == null || request.contrasena == null || request.correoPrincipal == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", "Faltan campos obligatorios."));
         }
 
         Role role;
@@ -45,12 +40,32 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", "Rol inválido."));
         }
 
+        // Validación específica por rol
+        if (role == Role.USUARIO || role == Role.ADMIN) {
+            if (request.nombreUsuario == null || request.nombreUsuario.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", "Nombre de usuario requerido."));
+            }
+        } else if (role == Role.PROVEEDOR) {
+            if (request.aliasContacto == null || request.aliasContacto.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", "Alias de contacto requerido para proveedor."));
+            }
+        }
+
+        // Verificar correo existente sólo para usuarios (proveedor se valida aparte en la capa de servicio si se implementa)
+        if (role != Role.PROVEEDOR) {
+            boolean correoExiste = usuarioService.listar().stream()
+                    .anyMatch(u -> request.correoPrincipal.equalsIgnoreCase(u.getCorreoPrincipal()));
+            if (correoExiste) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("mensaje", "El correo ya está registrado como usuario."));
+            }
+        }
+
         Usuario usuario = null;
         if (role != Role.PROVEEDOR) {
             usuario = new Usuario();
             usuario.setNombreUsuario(request.nombreUsuario);
             usuario.setCorreoPrincipal(request.correoPrincipal);
-            usuario.setContrasena(request.contrasena); // TODO: cifrar
+            usuario.setContrasena(request.contrasena); // TODO: aplicar hash BCrypt
             usuario.setRol(role);
             usuario.setActivo(true);
         }
@@ -58,7 +73,7 @@ public class AuthController {
         switch (role) {
             case PROVEEDOR -> {
                 Proveedor proveedor = proveedorService.registrarAutonomo(request.aliasContacto, request.correoPrincipal, request.contrasena);
-                return ResponseEntity.ok(Map.of(
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                         "mensaje", "Registro de proveedor exitoso.",
                         "idProveedor", proveedor.getIdProveedor(),
                         "correo", proveedor.getCorreo(),
@@ -72,7 +87,7 @@ public class AuthController {
                 admin.setAreaResponsable(request.areaResponsable != null ? request.areaResponsable : "General");
                 admin.setRol(Role.ADMIN);
                 administradorService.guardar(admin);
-                return ResponseEntity.ok(Map.of(
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                         "mensaje", "Registro de administrador exitoso.",
                         "idUsuario", guardado.getIdUsuario(),
                         "idAdmin", admin.getIdAdmin(),
@@ -81,8 +96,9 @@ public class AuthController {
             }
             default -> {
                 String msg = usuarioService.registrar(usuario);
-                Usuario creado = usuario != null ? usuarioService.buscarPorEmail(usuario.getCorreoPrincipal()) : null;
-                return ResponseEntity.ok(Map.of(
+                // El servicio llena el ID en la misma instancia 'usuario' tras persistir
+                Usuario creado = usuario;
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                         "mensaje", msg,
                         "idUsuario", creado != null ? creado.getIdUsuario() : null,
                         "rol", role.name()
@@ -102,9 +118,10 @@ public class AuthController {
         public String areaResponsable; // admin
     }
 
-    private boolean roleIsUser(String rol) {
-        if (rol == null) return false;
-        String r = rol.toUpperCase();
-        return "USUARIO".equals(r) || "ADMIN".equals(r);
-    }
+    // helper legacy (no usado tras refactor); conservar comentado para referencia
+    // private boolean roleIsUser(String rol) {
+    //     if (rol == null) return false;
+    //     String r = rol.toUpperCase();
+    //     return "USUARIO".equals(r) || "ADMIN".equals(r);
+    // }
 }

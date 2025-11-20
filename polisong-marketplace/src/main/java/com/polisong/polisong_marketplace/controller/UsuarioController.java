@@ -6,6 +6,9 @@ import com.polisong.polisong_marketplace.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+// Validación (se deja preparado, comentar si no está disponible Jakarta Validation)
+// import org.springframework.validation.annotation.Validated;
+// import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -32,25 +35,35 @@ public class UsuarioController {
     }
 
     @PostMapping("/registrar")
-    public String registrar(@RequestBody Usuario usuario) {
-        return usuarioService.registrar(usuario);
+    public ResponseEntity<Map<String,Object>> registrar(@RequestBody Usuario usuario) {
+        String resultado = usuarioService.registrar(usuario);
+        boolean exito = resultado.toLowerCase().contains("exitoso");
+        if (exito) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                    "mensaje", resultado,
+                    "correo", usuario.getCorreoPrincipal(),
+                    "rol", usuario.getRol() != null ? usuario.getRol().name() : "USUARIO"
+            ));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", resultado));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> iniciarSesion(@RequestParam String correo, @RequestParam String contrasena) {
+    public ResponseEntity<Map<String,Object>> iniciarSesion(@RequestParam String correo, @RequestParam String contrasena) {
         String resultado = usuarioService.iniciarSesion(correo, contrasena);
         if (resultado.equals("Inicio de sesión exitoso.")) {
-            Usuario usuario = usuarioService.listar()
-                    .stream().filter(u -> u.getCorreoPrincipal().equals(correo)).findFirst().orElse(null);
+            // Recuperación básica del usuario (mantiene enfoque original sin nuevos métodos del service)
+            Usuario usuarioMatch = usuarioService.listar().stream()
+                    .filter(u -> correo.equals(u.getCorreoPrincipal()))
+                    .findFirst().orElse(null);
             return ResponseEntity.ok(Map.of(
-                "mensaje", resultado,
-                "nombre", usuario != null ? usuario.getNombreUsuario() : correo,
-                "correo", correo,
-                "rol", usuario != null && usuario.getRol() != null ? usuario.getRol().name() : "USUARIO"
+                    "mensaje", resultado,
+                    "nombre", usuarioMatch != null ? usuarioMatch.getNombreUsuario() : correo,
+                    "correo", correo,
+                    "rol", usuarioMatch != null && usuarioMatch.getRol() != null ? usuarioMatch.getRol().name() : "USUARIO"
             ));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("mensaje", resultado));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("mensaje", resultado));
     }
 
     @PostMapping("/logout")
@@ -81,33 +94,40 @@ public class UsuarioController {
             @RequestBody Map<String, Object> payload) {
         String nombreUsuario = payload.get("nombreUsuario") != null ? payload.get("nombreUsuario").toString() : null;
         String correoPrincipal = payload.get("correoPrincipal") != null ? payload.get("correoPrincipal").toString() : null;
+        // Mantener lógica original: delegar validación/existencia al service
         String resultado = usuarioService.editarPerfil(id, nombreUsuario, correoPrincipal);
         return ResponseEntity.ok(Map.of("mensaje", resultado));
     }
 
     @GetMapping("/email")
     public ResponseEntity<Usuario> buscarPorEmail(@RequestParam("correo") String correo) {
-        Usuario u = usuarioService.buscarPorEmail(correo);
+        // Reutiliza enfoque actual (si no existe método dedicado en service se puede ajustar después)
+        Usuario u = usuarioService.listar().stream()
+                .filter(x -> correo.equals(x.getCorreoPrincipal()))
+                .findFirst().orElse(null);
         if (u == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(u);
     }
 
-    @GetMapping("/{id}/historial-pedidos")
-    public List<Pedido> historialPedidos(@PathVariable Integer id) {
-        return usuarioService.verHistorialPedidos(id);
-    }
+    // Historial de pedidos (requiere método en service: verHistorialPedidos). Se deja temporalmente deshabilitado si no existe.
+    // @GetMapping("/{id}/historial-pedidos")
+    // public List<Pedido> historialPedidos(@PathVariable Integer id) {
+    //     return usuarioService.verHistorialPedidos(id);
+    // }
 
-    @PostMapping("/validar")
-    public Map<String, Object> validar(@RequestParam("correo") String correo,
-                                       @RequestParam("contrasena") String contrasena) {
-        boolean valido = usuarioService.validarCredenciales(correo, contrasena);
-        return Map.of("valido", valido);
-    }
+    // Endpoint de validación (requiere método validarCredenciales en service). Comentado si aún no implementado.
+    // @PostMapping("/validar")
+    // public Map<String, Object> validar(@RequestParam("correo") String correo,
+    //                                    @RequestParam("contrasena") String contrasena) {
+    //     boolean valido = usuarioService.validarCredenciales(correo, contrasena);
+    //     return Map.of("valido", valido);
+    // }
 
-    @PostMapping("/recuperar-contrasena")
-    public Map<String, String> recuperarContrasena(@RequestParam("correo") String correo) {
-        String resultado = usuarioService.enviarCorreoRecuperacion(correo);
-        return Map.of("mensaje", resultado);
-    }
+    // Recuperación de contraseña (requiere método enviarCorreoRecuperacion en service). Comentado si no existe.
+    // @PostMapping("/recuperar-contrasena")
+    // public Map<String, String> recuperarContrasena(@RequestParam("correo") String correo) {
+    //     String resultado = usuarioService.enviarCorreoRecuperacion(correo);
+    //     return Map.of("mensaje", resultado);
+    // }
 }
 

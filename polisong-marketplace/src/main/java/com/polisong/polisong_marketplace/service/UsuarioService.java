@@ -1,14 +1,12 @@
 package com.polisong.polisong_marketplace.service;
 
-import com.polisong.polisong_marketplace.model.Pedido;
 import com.polisong.polisong_marketplace.model.Role;
 import com.polisong.polisong_marketplace.model.Usuario;
 import com.polisong.polisong_marketplace.repository.PedidoRepository;
 import com.polisong.polisong_marketplace.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,15 +14,20 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    
+
     private final PedidoRepository pedidoRepository;
     private final NotificacionService notificacionService;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           PedidoRepository pedidoRepository,
-                          NotificacionService notificacionService) {
+                          NotificacionService notificacionService,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.pedidoRepository = pedidoRepository;
         this.notificacionService = notificacionService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Usuario> listar() {
@@ -52,6 +55,10 @@ public class UsuarioService {
         if (nuevo.getRol() == null) {
             nuevo.setRol(Role.USUARIO);
         }
+        // Hash de contraseña
+        if (nuevo.getContrasena() != null && !nuevo.getContrasena().isBlank()) {
+            nuevo.setContrasena(passwordEncoder.encode(nuevo.getContrasena()));
+        }
         usuarioRepository.save(nuevo);
         return "Usuario registrado correctamente.";
     }
@@ -60,7 +67,7 @@ public class UsuarioService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreoPrincipal(correo);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            if (usuario.getContrasena().equals(contrasena)) {
+            if (usuario.getContrasena() != null && passwordEncoder.matches(contrasena, usuario.getContrasena())) {
                 usuario.setActivo(true);
                 usuarioRepository.save(usuario);
                 return "Inicio de sesión exitoso.";
@@ -86,8 +93,11 @@ public class UsuarioService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            if (usuario.getContrasena().equals(actual)) {
-                usuario.setContrasena(nueva);
+            if (usuario.getContrasena() != null && passwordEncoder.matches(actual, usuario.getContrasena())) {
+                if (nueva == null || nueva.isBlank()) {
+                    return "La nueva contraseña no puede estar vacía.";
+                }
+                usuario.setContrasena(passwordEncoder.encode(nueva));
                 usuarioRepository.save(usuario);
                 return "Contraseña actualizada correctamente.";
             } else {
@@ -97,82 +107,28 @@ public class UsuarioService {
         return "Usuario no encontrado.";
     }
 
-    // =============================
-    // Nuevos métodos solicitados
-    // =============================
-
-    // Editar perfil (actualiza campos básicos; no cambia contraseña)
-    public String editarPerfil(Integer idUsuario, String nombreUsuario, String correoPrincipal) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
-        if (usuarioOpt.isEmpty()) {
-            return "Usuario no encontrado.";
-        }
-        Usuario u = usuarioOpt.get();
-        if (correoPrincipal != null && !correoPrincipal.equals(u.getCorreoPrincipal())) {
-            if (usuarioRepository.findByCorreoPrincipal(correoPrincipal).isPresent()) {
-                return "El correo ya está registrado por otro usuario.";
+    // Actualiza nombre y/o correo si se proporcionan. Valida duplicado de correo.
+    public String editarPerfil(Integer id, String nombreUsuario, String correoPrincipal) {
+        Optional<Usuario> opt = usuarioRepository.findById(id);
+        if (opt.isEmpty()) return "Usuario no encontrado.";
+        Usuario usuario = opt.get();
+        boolean modificado = false;
+        if (correoPrincipal != null && !correoPrincipal.isBlank()) {
+            Optional<Usuario> existeCorreo = usuarioRepository.findByCorreoPrincipal(correoPrincipal);
+            if (existeCorreo.isPresent() && !existeCorreo.get().getIdUsuario().equals(id)) {
+                return "El correo ya está registrado.";
             }
-            u.setCorreoPrincipal(correoPrincipal);
+            usuario.setCorreoPrincipal(correoPrincipal);
+            modificado = true;
         }
-        if (nombreUsuario != null) u.setNombreUsuario(nombreUsuario);
-        usuarioRepository.save(u);
+        if (nombreUsuario != null && !nombreUsuario.isBlank()) {
+            usuario.setNombreUsuario(nombreUsuario);
+            modificado = true;
+        }
+        if (!modificado) {
+            return "No se enviaron campos para actualizar.";
+        }
+        usuarioRepository.save(usuario);
         return "Perfil actualizado correctamente.";
     }
-
-    // Buscar por email (correoPrincipal)
-    public Usuario buscarPorEmail(String correoPrincipal) {
-        return usuarioRepository.findByCorreoPrincipal(correoPrincipal).orElse(null);
-    }
-
-    // Ver historial de pedidos del usuario
-    public List<Pedido> verHistorialPedidos(Integer idUsuario) {
-        // Nota: si el repositorio tiene un método derivado incompatible con el modelo,
-        // usamos un filtrado seguro por ahora.
-        try {
-            // Intentar usar método derivado existente si aplica
-            return pedidoRepository.findByUsuario_IdUsuario(idUsuario);
-        } catch (Exception ignored) {
-            // Fallback: filtrar en memoria por id (usando Usuario.idUsuario)
-            List<Pedido> all = pedidoRepository.findAll();
-            List<Pedido> result = new ArrayList<>();
-            for (Pedido p : all) {
-                if (p.getUsuario() != null && p.getUsuario().getIdUsuario() != null
-                        && p.getUsuario().getIdUsuario().equals(idUsuario)) {
-                    result.add(p);
-                }
-            }
-            return result;
-        }
-    }
-
-    // Validar credenciales sin iniciar sesión
-    public boolean validarCredenciales(String correoPrincipal, String contrasena) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreoPrincipal(correoPrincipal);
-        return usuarioOpt.isPresent() && contrasena != null && contrasena.equals(usuarioOpt.get().getContrasena());
-    }
-
-    // Generar y enviar correo de recuperación de contraseña (temporal)
-    public String enviarCorreoRecuperacion(String correoPrincipal) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreoPrincipal(correoPrincipal);
-        if (usuarioOpt.isEmpty()) {
-            return "No existe un usuario con ese correo.";
-        }
-        Usuario u = usuarioOpt.get();
-        String temp = generarContrasenaTemporal(8);
-        u.setContrasena(temp);
-        usuarioRepository.save(u);
-        notificacionService.enviarCorreoNotificacion(correoPrincipal,
-                "Recuperación de contraseña",
-                "Tu contraseña temporal es: " + temp + "\nPor favor, cámbiala al iniciar sesión.");
-        return "Se envió un correo con la contraseña temporal.";
-    }
-
-    private String generarContrasenaTemporal(int length) {
-        final String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789"; // sin confusos
-        SecureRandom rnd = new SecureRandom();
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) sb.append(chars.charAt(rnd.nextInt(chars.length())));
-        return sb.toString();
-    }
 }
-
