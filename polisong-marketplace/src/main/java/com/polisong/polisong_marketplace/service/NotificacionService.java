@@ -43,7 +43,7 @@ public class NotificacionService {
         notificacion.setMensaje(mensaje);
         notificacion.setEstado("No leída");
         notificacionRepository.save(notificacion);
-        System.out.println("Notificación enviada a: " + usuario.getNombre());
+        System.out.println("Notificación enviada a: " + usuario.getNombreUsuario());
     }
 
     // 2️ Notificar cambio en pedido

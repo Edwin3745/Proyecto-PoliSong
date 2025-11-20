@@ -50,7 +50,7 @@ public class NotificacionController {
      @PostMapping("/enviar")
     public String enviarNotificacion(@RequestBody Usuario usuario, @RequestParam String mensaje) {
         notificacionService.enviarNotificacion(usuario, mensaje);
-        return "Notificación enviada a " + usuario.getNombre();
+        return "Notificación enviada a " + usuario.getNombreUsuario();
     }
 
     // Notificar cambio de pedido
@@ -64,7 +64,7 @@ public class NotificacionController {
     @PostMapping("/promocion")
     public String notificarPromocion(@RequestBody Usuario usuario, @RequestParam String descripcion) {
         notificacionService.notificarPromocion(usuario, descripcion);
-        return "Promoción notificada a " + usuario.getNombre();
+        return "Promoción notificada a " + usuario.getNombreUsuario();
     }
 
     // Simular envio de correo

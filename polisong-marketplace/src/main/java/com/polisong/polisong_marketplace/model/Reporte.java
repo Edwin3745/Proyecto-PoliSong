@@ -7,16 +7,13 @@ import java.time.LocalDateTime;
 @Table(name = "reporte")
 public class Reporte {
 
-  
-    // VARIABLES
-   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reporte")
     private Integer idReporte;
 
     @Column(name = "tipo", length = 50)
-    private String tipo; // "VENTAS", "USUARIOS", etc.
+    private String tipo;
 
     @Column(name = "fecha_generacion")
     private LocalDateTime fechaGeneracion;
@@ -27,34 +24,59 @@ public class Reporte {
     @Column(name = "total_generado")
     private Double totalGenerado;
 
+    // Relación correcta: muchos reportes pueden ser de un Administrador
     @ManyToOne
     @JoinColumn(name = "id_admin")
-    private Usuario administrador;
-
-   
-    // CONSTRUCTOR
+    private Administrador administrador;
 
     public Reporte() {}
 
- 
-    // GETTERS Y SETTERS
-  
-    public Integer getIdReporte() { return idReporte; }
-    public void setIdReporte(Integer idReporte) { this.idReporte = idReporte; }
+    public Integer getIdReporte() {
+        return idReporte;
+    }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setIdReporte(Integer idReporte) {
+        this.idReporte = idReporte;
+    }
 
-    public LocalDateTime getFechaGeneracion() { return fechaGeneracion; }
-    public void setFechaGeneracion(LocalDateTime fechaGeneracion) { this.fechaGeneracion = fechaGeneracion; }
+    public String getTipo() {
+        return tipo;
+    }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 
-    public Double getTotalGenerado() { return totalGenerado; }
-    public void setTotalGenerado(Double totalGenerado) { this.totalGenerado = totalGenerado; }
+    public LocalDateTime getFechaGeneracion() {
+        return fechaGeneracion;
+    }
 
-    public Usuario getAdministrador() { return administrador; }
-    public void setAdministrador(Usuario administrador) { this.administrador = administrador; }
+    public void setFechaGeneracion(LocalDateTime fechaGeneracion) {
+        this.fechaGeneracion = fechaGeneracion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Double getTotalGenerado() {
+        return totalGenerado;
+    }
+
+    public void setTotalGenerado(Double totalGenerado) {
+        this.totalGenerado = totalGenerado;
+    }
+
+    public Administrador getAdministrador() {
+        return administrador;
+    }
+
+    public void setAdministrador(Administrador administrador) {
+        this.administrador = administrador;
+    }
 }
 

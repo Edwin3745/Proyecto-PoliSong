@@ -35,7 +35,7 @@ public class CancionController {
     public Cancion actualizar(@PathVariable Integer id, @RequestBody Cancion cancion) {
         Cancion existente = cancionService.buscarPorId(id);
         if (existente != null) {
-            cancion.setIdCancion(id);
+            cancion.setIdProducto(id); // ID heredado de Producto
             return cancionService.guardar(cancion);
         }
         return null;
@@ -45,4 +45,28 @@ public class CancionController {
     public void eliminar(@PathVariable Integer id) {
         cancionService.eliminar(id);
     }
+
+    // 🔍 Métodos específicos
+    @GetMapping("/buscar")
+    public List<Cancion> buscarPorNombre(@RequestParam String nombre) {
+        return cancionService.buscarPorNombre(nombre);
+    }
+
+    @GetMapping("/filtrar/precio")
+    public List<Cancion> filtrarPorPrecio(
+            @RequestParam double minimo,
+            @RequestParam double maximo) {
+        return cancionService.filtrarPorPrecio(minimo, maximo);
+    }
+
+    @GetMapping("/duracion/total")
+    public double calcularDuracionTotal(@RequestParam List<Integer> ids) {
+        return cancionService.calcularDuracionTotal(ids);
+    }
+
+    @GetMapping("/{id}/disponible")
+    public boolean verificarDisponibilidad(@PathVariable Integer id) {
+        return cancionService.verificarDisponibilidad(id);
+    }
 }
+

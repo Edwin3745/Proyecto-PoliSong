@@ -29,33 +29,30 @@ public class CancionService {
     public void eliminar(Integer id) {
         cancionRepository.deleteById(id);
     }
-    
-    // 1️ Buscar canciones por nombre
-public List<Cancion> buscarPorNombre(String nombre) {
-    return cancionRepository.findAll().stream()
-            .filter(c -> c.getNombreCancion().toLowerCase().contains(nombre.toLowerCase()))
-            .toList();
+
+    public List<Cancion> buscarPorNombre(String nombre) {
+        return cancionRepository.findAll().stream()
+                .filter(c -> c.getNombre().toLowerCase().contains(nombre.toLowerCase()))
+                .toList();
+    }
+
+    public List<Cancion> filtrarPorPrecio(double minimo, double maximo) {
+        return cancionRepository.findAll().stream()
+                .filter(c -> c.getPrecio() >= minimo && c.getPrecio() <= maximo)
+                .toList();
+    }
+
+    public double calcularDuracionTotal(List<Integer> idsCanciones) {
+        return idsCanciones.stream()
+                .map(cancionRepository::findById)
+                .filter(java.util.Optional::isPresent)
+                .mapToDouble(opt -> opt.get().getDuracion())
+                .sum();
+    }
+
+    public boolean verificarDisponibilidad(Integer id) {
+        Cancion cancion = cancionRepository.findById(id).orElse(null);
+        return cancion != null && cancion.getPrecio() != null && cancion.getDuracion() != null;
+    }
 }
 
-// 2️ Filtrar canciones por rango de precio
-public List<Cancion> filtrarPorPrecio(double minimo, double maximo) {
-    return cancionRepository.findAll().stream()
-            .filter(c -> c.getPrecio() >= minimo && c.getPrecio() <= maximo)
-            .toList();
-}
-
-// 3️ Calcular duración total de una lista de canciones
-public double calcularDuracionTotal(List<Integer> idsCanciones) {
-    return idsCanciones.stream()
-            .map(cancionRepository::findById)
-            .filter(java.util.Optional::isPresent)
-            .mapToDouble(opt -> opt.get().getDuracion())
-            .sum();
-}
-
-// 4️ Verificar disponibilidad de una canción (si tiene precio y duración)
-public boolean verificarDisponibilidad(Integer id) {
-    Cancion cancion = cancionRepository.findById(id).orElse(null);
-    return cancion != null && cancion.getPrecio() != null && cancion.getDuracion() != null;
-}
-}

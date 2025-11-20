@@ -37,7 +37,7 @@ public class ViniloService {
         Vinilo vinilo = viniloOpt.get();
         vinilo.setNombre(viniloActualizado.getNombre());
         vinilo.setArtista(viniloActualizado.getArtista());
-        vinilo.setAnioLanzamiento(viniloActualizado.getAnioLanzamiento());
+        vinilo.setAñoLanzamiento(viniloActualizado.getAñoLanzamiento());
         vinilo.setPrecio(viniloActualizado.getPrecio());
         vinilo.setCantidadDisponible(viniloActualizado.getCantidadDisponible());
         vinilo.setEstado(viniloActualizado.getEstado());

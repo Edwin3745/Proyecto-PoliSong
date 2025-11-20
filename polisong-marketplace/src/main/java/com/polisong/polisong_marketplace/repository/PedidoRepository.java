@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
+
+    // Buscar pedidos por el ID del usuario (corregido)
     List<Pedido> findByUsuario_IdUsuario(Integer idUsuario);
 }
-

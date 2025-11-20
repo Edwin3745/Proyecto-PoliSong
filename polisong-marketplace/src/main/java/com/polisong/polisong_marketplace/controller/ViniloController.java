@@ -35,7 +35,7 @@ public class ViniloController {
     public Vinilo actualizar(@PathVariable Integer id, @RequestBody Vinilo vinilo) {
         Vinilo existente = viniloService.buscarPorId(id);
         if (existente != null) {
-            vinilo.setIdVinilo(id);
+            vinilo.setIdProducto(id); // ID heredado de Producto
             return viniloService.guardar(vinilo);
         }
         return null;
@@ -46,3 +46,4 @@ public class ViniloController {
         viniloService.eliminar(id);
     }
 }
+

@@ -1,23 +1,31 @@
 package com.polisong.polisong_marketplace.service;
 
-import com.polisong.polisong_marketplace.model.Valoracion;
 import com.polisong.polisong_marketplace.model.Venta;
+import com.polisong.polisong_marketplace.model.Proveedor;
+import com.polisong.polisong_marketplace.model.Pedido;
 import com.polisong.polisong_marketplace.repository.VentaRepository;
+import com.polisong.polisong_marketplace.repository.ProveedorRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDate;
 
 @Service
 public class VentaService {
 
     private final VentaRepository ventaRepository;
+    private final ProveedorRepository proveedorRepository;
 
-
-    public VentaService(VentaRepository ventaRepository) {
+    public VentaService(VentaRepository ventaRepository, ProveedorRepository proveedorRepository) {
         this.ventaRepository = ventaRepository;
+        this.proveedorRepository = proveedorRepository;
     }
+
+    // =============================
+    // CRUD básico
+    // =============================
 
     public List<Venta> listar() {
         return ventaRepository.findAll();
@@ -34,66 +42,120 @@ public class VentaService {
     public void eliminar(Integer id) {
         ventaRepository.deleteById(id);
     }
-    
-    //Registrar nueva venta
+
+    // =============================
+    // Registrar nueva venta
+    // =============================
+
     public Venta registrarVenta(Venta venta) {
-        venta.setEstado("Pendiente"); //Estado inicial por defecto
+        if (venta.getEstado() == null) {
+            venta.setEstado("Pendiente");
+        }
+        if (venta.getFechaVenta() == null) {
+            venta.setFechaVenta(LocalDate.now());
+        }
+        // Calcular ingreso total si viene pedido
+        if (venta.getPedido() != null) {
+            venta.setIngresoTotal(calcularIngresoDesdePedido(venta.getPedido()));
+        }
         return ventaRepository.save(venta);
     }
 
+    // =============================
     // Consultar todas las ventas
+    // =============================
+
     public List<Venta> consultarVentas() {
         return ventaRepository.findAll();
     }
 
-    // Actualizar estado de una venta (por ID)
+    // =============================
+    // Actualizar estado
+    // =============================
+
     public String actualizarEstadoVenta(Integer idVenta, String nuevoEstado) {
         Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
-        if (ventaOpt.isPresent()) {
-            Venta venta = ventaOpt.get();
-            venta.setEstado(nuevoEstado);
-            ventaRepository.save(venta);
-            return "Estado de la venta actualizado correctamente a: " + nuevoEstado;
-        } else {
+        if (ventaOpt.isEmpty()) {
             return "Venta no encontrada con ID: " + idVenta;
         }
+        Venta venta = ventaOpt.get();
+        venta.setEstado(nuevoEstado);
+        ventaRepository.save(venta);
+        return "Estado actualizado a: " + nuevoEstado;
     }
 
-    // Actualizar proveedor de una venta
+    // =============================
+    // Actualizar proveedor (idProveedor pertenece a Proveedor con rol enum)
+    // =============================
+
     public String actualizarVentaProveedor(Integer idVenta, Integer idProveedor) {
         Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
-        if (ventaOpt.isPresent()) {
-            Venta venta = ventaOpt.get();
-            venta.getProveedor().setIdProveedor(idProveedor);
-            ventaRepository.save(venta);
-            return "Proveedor actualizado correctamente para la venta ID: " + idVenta;
-        } else {
+        if (ventaOpt.isEmpty()) {
             return "Venta no encontrada con ID: " + idVenta;
         }
+        Optional<Proveedor> proveedorOpt = proveedorRepository.findById(idProveedor);
+        if (proveedorOpt.isEmpty()) {
+            return "Proveedor no encontrado con ID: " + idProveedor;
+        }
+        Venta venta = ventaOpt.get();
+        venta.setProveedor(proveedorOpt.get());
+        ventaRepository.save(venta);
+        return "Proveedor actualizado correctamente para la venta ID: " + idVenta;
     }
-    //Reporte de ventas por proveedor o general
-       public List<Venta> generarReporteVentas(Integer idProveedor) {
+
+    // =============================
+    // Generar reporte de ventas
+    // =============================
+
+    public List<Venta> generarReporteVentas(Integer idProveedor) {
         if (idProveedor != null) {
             return ventaRepository.findByProveedor_IdProveedor(idProveedor);
-        } else {
-            return ventaRepository.findAll(); // reporte general
         }
+        return ventaRepository.findAll();
     }
-    //Notificar venta al proveedor desde la pagina
-     public String notificarProveedorDesdePagina(Venta venta) {
+
+    // =============================
+    // Notificar al proveedor (simple log)
+    // =============================
+
+    public String notificarProveedorDesdePagina(Integer idVenta) {
+        Venta venta = ventaRepository.findById(idVenta)
+                .orElseThrow(() -> new IllegalArgumentException("Venta no encontrada con ID: " + idVenta));
         if (venta.getProveedor() == null) {
             return "⚠ No se pudo notificar: la venta no tiene proveedor asignado.";
         }
-
-        String mensaje = "Notificación: Se ha registrado una nueva venta.\n" +
-                "Producto: " + (venta.getIdVenta() != null ? ((Venta) venta.getVinilos()).getVinilos() : "Desconocido") + "\n" +
-                "Proveedor: " + venta.getProveedor().getUsuario() + "\n" +
+        String productos = obtenerResumenProductos(venta.getPedido());
+        String mensaje = "Notificación de venta:\n" +
+                "Proveedor: " + venta.getProveedor().getNombreProveedor() + "\n" +
                 "Fecha: " + venta.getFechaVenta() + "\n" +
-                "Estado: " + venta.getEstado();
-
-        
-        System.out.println(mensaje); // visible en consola del backend
+                "Estado: " + venta.getEstado() + "\n" +
+                "Productos: " + productos + "\n" +
+                "Ingreso Total: " + (venta.getIngresoTotal() != null ? venta.getIngresoTotal() : "N/D");
+        System.out.println(mensaje);
         return mensaje;
     }
-    
+
+    // =============================
+    // Helpers
+    // =============================
+
+    private BigDecimal calcularIngresoDesdePedido(Pedido pedido) {
+        if (pedido == null || pedido.getDetalles() == null) {
+            return BigDecimal.ZERO;
+        }
+        return pedido.getDetalles().stream()
+                .map(d -> d.getSubtotal() == null ? BigDecimal.ZERO : BigDecimal.valueOf(d.getSubtotal()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private String obtenerResumenProductos(Pedido pedido) {
+        if (pedido == null) {
+            return "Sin detalles";
+        }
+        int cantidad = (pedido.getDetalles() == null) ? 0 : pedido.getDetalles().size();
+        Integer idPedido = pedido.getIdPedido();
+        return "Pedido #" + (idPedido != null ? idPedido : "N/D") + " (" + cantidad + " ítems)";
+    }
 }
+
+

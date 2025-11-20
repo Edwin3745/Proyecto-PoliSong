@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 @Table(name = "detallepedido")
 public class DetallePedido {
 
-    // VARIABLES
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle")
@@ -17,12 +16,8 @@ public class DetallePedido {
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "id_vinilo")
-    private Vinilo vinilo;
-
-    @ManyToOne
-    @JoinColumn(name = "id_cancion")
-    private Cancion cancion;
+    @JoinColumn(name = "id_producto")
+    private Producto producto;
 
     @Column(name = "cantidad")
     private Integer cantidad;
@@ -33,12 +28,7 @@ public class DetallePedido {
     @Column(name = "subtotal")
     private Double subtotal;
 
-
-    // CONSTRUCTOR
-
     public DetallePedido() {}
-
-    // GETTERS Y SETTERS
 
     public Integer getIdDetalle() { return idDetalle; }
     public void setIdDetalle(Integer idDetalle) { this.idDetalle = idDetalle; }
@@ -46,11 +36,8 @@ public class DetallePedido {
     public Pedido getPedido() { return pedido; }
     public void setPedido(Pedido pedido) { this.pedido = pedido; }
 
-    public Vinilo getVinilo() { return vinilo; }
-    public void setVinilo(Vinilo vinilo) { this.vinilo = vinilo; }
-
-    public Cancion getCancion() { return cancion; }
-    public void setCancion(Cancion cancion) { this.cancion = cancion; }
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
 
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
@@ -61,3 +48,4 @@ public class DetallePedido {
     public Double getSubtotal() { return subtotal; }
     public void setSubtotal(Double subtotal) { this.subtotal = subtotal; }
 }
+

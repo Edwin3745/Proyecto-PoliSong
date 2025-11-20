@@ -1,28 +1,37 @@
+import { mostrarAdminPanel } from "./admin.js";
+import { mostrarProviderDashboard } from "./provider.js";
+import { renderPerfilSection } from "./perfil.js";
+import { renderRepositorio } from "./repositorio.js";
+import { renderPlaylists } from "./playlists.js";
+import { renderDescargas } from "./descargas.js";
+import { renderCompras } from "./compras.js";
+import { ensureNavbar } from "./navbar.js";
+
 export function mostrarHome(main, nombreUsuario) {
+  document.body.classList.add('home-mode');
+  document.body.classList.remove('auth-screen');
+  const userRole = (localStorage.getItem("userRole") || "USUARIO").toUpperCase();
+
   main.innerHTML = `
     <div class="home-wrapper">
       <aside class="sidebar">
         <h1>PoliSong</h1>
         <nav>
-          <button class="menu-btn active" data-section="home"> Home</button>
-          <button class="menu-btn" data-section="songs"> Songs</button>
-          <button class="menu-btn" data-section="playlists"> Playlists</button>
-          <button class="menu-btn" data-section="albums"> Albums</button>
-          <button class="menu-btn" data-section="artists"> Artists</button>
-          <button class="menu-btn" id="btnSalir"> Logout</button>
+          ${buildMenu(userRole)}
         </nav>
       </aside>
-
       <section class="main-content" id="mainContent">
-        ${getHomeSection(nombreUsuario)}
+        ${getHomeSection(nombreUsuario, userRole)}
       </section>
     </div>
   `;
 
+  ensureNavbar(nombreUsuario);
+
   const content = document.getElementById("mainContent");
   const buttons = main.querySelectorAll(".menu-btn");
 
-  // Evento de clic en cada botón del menú
+  // Evento de clic en cada botón del menu
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       buttons.forEach((b) => b.classList.remove("active"));
@@ -34,14 +43,37 @@ export function mostrarHome(main, nombreUsuario) {
       setTimeout(() => {
         switch (section) {
           case "home":
-            content.innerHTML = getHomeSection(nombreUsuario);
+            content.innerHTML = getHomeSection(nombreUsuario, userRole);
+            break;
+          case "perfil":
+            content.innerHTML = renderPerfilSection(nombreUsuario);
+            break;
+          case "repositorio":
+            content.innerHTML = renderRepositorio();
+            break;
+          case "playlists":
+            content.innerHTML = renderPlaylists();
+            break;
+          case "descargas":
+            content.innerHTML = renderDescargas();
+            break;
+          case "compras":
+            content.innerHTML = renderCompras();
+            break;
+          case "admin":
+            content.innerHTML = getAdminSection();
+            break;
+          case "provider":
+            // Render proveedor como nodo para conservar listeners internos
+            const providerContainer = document.createElement('div');
+            mostrarProviderDashboard(providerContainer);
+            content.innerHTML = '';
+            content.appendChild(providerContainer);
             break;
           case "songs":
             content.innerHTML = getSongsSection();
             break;
-          case "playlists":
-            content.innerHTML = getPlaylistsSection();
-            break;
+          
           case "albums":
             content.innerHTML = getAlbumsSection();
             break;
@@ -64,37 +96,63 @@ export function mostrarHome(main, nombreUsuario) {
   });
 }
 
-/* ==========================
-   SECCIONES DEL DASHBOARD
-========================== */
+//DASHBOARD secciones
 
-function getHomeSection(nombreUsuario) {
+function getHomeSection(nombreUsuario, role) {
+  // Tarjetas de ejemplo, placeholders.
+  const exampleCards = Array.from({ length: 4 }).map((_, i) => ({ title: `Ejemplo ${i + 1}`, artist: "Demo" }));
+
+  let extraBlock = "";
+  if (role === "ADMIN") {
+    extraBlock = `<div class="admin-alert">\n        <h3>Panel Administrativo</h3>\n        <p>Accede a gestión de usuarios y reportes desde el menú.</p>\n      </div>`;
+  } else if (role === "PROVIDER") {
+    extraBlock = `<div class="provider-alert">\n        <h3>Resumen Proveedor</h3>\n        <p>Administra tus productos y revisa estadísticas de ventas.</p>\n      </div>`;
+  } else {
+    extraBlock = `<div class="user-alert">\n        <h3>Descubre Música</h3>\n        <p>Explora canciones, playlists y artistas recomendados.</p>\n      </div>`;
+  }
+
   return `
     <div class="top-bar">
-      <h2>Welcome, ${nombreUsuario} </h2>
-      <p>Enjoy your music journey </p>
+      <h2>Bienvenido, ${nombreUsuario}</h2>
+      <p>Rol activo: ${role}</p>
     </div>
-
+    ${extraBlock}
     <div>
-      <h3 class="section-title">Quick Picks</h3>
+      <h3 class="section-title">Quick pick</h3>
       <div class="cards-grid">
-        ${[
-          { title: "The Sound of Silence", artist: "Disturbed", img: "https://i.scdn.co/image/ab67616d0000b27309f3dc51a2c146e69ef2e4f4" },
-          { title: "Someone Like You", artist: "Adele", img: "https://i.scdn.co/image/ab67616d0000b273e43ebffde6900c8b7b1f8e4d" },
-          { title: "Save Your Tears", artist: "The Weeknd", img: "https://i.scdn.co/image/ab67616d0000b273299f6e5a6f4a7c54582e0d2d" },
-          { title: "Hotel California", artist: "Eagles", img: "https://i.scdn.co/image/ab67616d0000b273d3d27a15b6e1ed59d3e5fdee" },
-        ]
-          .map(
-            (song) => `
-          <div class="card">
-            <img src="${song.img}" alt="${song.title}">
-            <p>${song.title}</p>
-            <small>${song.artist}</small>
-          </div>`
-          )
-          .join("")}
+        ${exampleCards.map(card => `
+          <div class="card placeholder">
+            <p>${card.title}</p>
+            <small>${card.artist}</small>
+          </div>`).join("")}
       </div>
     </div>
+  `;
+}
+
+function buildMenu(role) {
+  const base = `
+    <button class="menu-btn active" data-section="home">Inicio</button>
+    <button class="menu-btn" data-section="perfil">Perfil</button>
+    <button class="menu-btn" data-section="repositorio">Repositorio</button>
+    <button class="menu-btn" data-section="playlists">Playlists</button>
+    <button class="menu-btn" data-section="descargas">Descargas</button>
+    <button class="menu-btn" data-section="compras">Compras</button>
+  `;
+  if (role === "ADMIN") {
+    return base + `
+      <button class="menu-btn" data-section="admin">Admin</button>
+      <button class="menu-btn" id="btnSalir">Salir</button>
+    `;
+  }
+  if (role === "PROVIDER") {
+    return base + `
+      <button class="menu-btn" data-section="provider">Proveedor</button>
+      <button class="menu-btn" id="btnSalir">Salir</button>
+    `;
+  }
+  return base + `
+    <button class="menu-btn" id="btnSalir">Salir</button>
   `;
 }
 
@@ -152,4 +210,16 @@ function getArtistsSection() {
       <div class="card"><p>Queen</p><small>Rock</small></div>
     </div>
   `;
+}
+
+function getAdminSection() {
+  const container = document.createElement("div");
+  mostrarAdminPanel(container);
+  return container.innerHTML;
+}
+
+function getProveedorSection() {
+  const container = document.createElement("div");
+  mostrarProveedorDashboard(container);
+  return container.innerHTML;
 }

@@ -5,6 +5,7 @@ import com.polisong.polisong_marketplace.repository.ReporteRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -31,29 +32,32 @@ public class ReporteService {
     public void eliminar(Integer id) {
         reporteRepository.deleteById(id);
     }
-    //Listar reportes por usuario
+    // Listar reportes por usuario (administrador) usando la FK del usuario
     public List<Reporte> listarPorUsuario(Integer idUsuario) {
-        return reporteRepository.findByIdUsuario(idUsuario);
+        return reporteRepository.findByAdministrador_IdAdmin(idUsuario);
     }
 
-    // Listar reportes por estado (pendiente, en revisión, resuelto)
-    public List<Reporte> listarPorEstado(String estado) {
-        return reporteRepository.findByEstadoIgnoreCase(estado);
+    // Listar reportes por "estado": en el modelo actual se usa el campo "tipo"
+    // Mantenemos el nombre para compatibilidad, pero filtramos por tipo
+    public List<Reporte> listarPorEstado(String estadoOTipo) {
+        return reporteRepository.findByTipoIgnoreCase(estadoOTipo);
     }
 
-    // Actualizar el estado de un reporte (por ejemplo, de “pendiente” a “resuelto”)
-    public Reporte actualizarEstado(Integer idReporte, String nuevoEstado) {
+    // Actualizar el "estado" del reporte: en el modelo actual actualiza el campo "tipo"
+    public Reporte actualizarEstado(Integer idReporte, String nuevoEstadoOTipo) {
         Optional<Reporte> reporteOpt = reporteRepository.findById(idReporte);
         if (reporteOpt.isPresent()) {
             Reporte reporte = reporteOpt.get();
-            reporte.setEstado(nuevoEstado);
+            reporte.setTipo(nuevoEstadoOTipo);
             return reporteRepository.save(reporte);
         }
         return null;
     }
 
-    //Contar la cantidad de reportes creados en una fecha específica
+    // Contar la cantidad de reportes creados en una fecha específica
     public long contarPorFecha(LocalDate fecha) {
-        return reporteRepository.countByFechaCreacion(fecha);
+        LocalDateTime inicio = fecha.atStartOfDay();
+        LocalDateTime fin = fecha.plusDays(1).atStartOfDay(); // exclusivo
+        return reporteRepository.countByFechaGeneracionBetween(inicio, fin);
     }
 }

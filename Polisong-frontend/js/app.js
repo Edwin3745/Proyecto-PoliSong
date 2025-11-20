@@ -1,7 +1,12 @@
 import { mostrarLogin } from "./pages/login.js";
+import { mostrarSplash } from "./pages/splash.js";
 
-// Cargar el login al iniciar
+// Flujo inicial: splash -> login
 document.addEventListener("DOMContentLoaded", () => {
-  const main = document.getElementById("contenido");
-  mostrarLogin(main);
+  mostrarSplash({
+    onComplete: () => {
+      const main = document.getElementById("contenido");
+      mostrarLogin(main);
+    }
+  });
 });

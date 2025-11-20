@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro | PoliSong Marketplace</title>
+  <link rel="stylesheet" href="style/theme.css" />
+</head>
+<body>
+  <main id="contenido"></main>
+  <script type="module">
+    import { mostrarRegistro } from './js/pages/register.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      const main = document.getElementById('contenido');
+      mostrarRegistro(main);
+    });
+  </script>
+</body>
+</html>
