@@ -106,12 +106,12 @@ function construirLogin(main) {
 
 export function mostrarLogin(main){
   try {
-    // Si el splash nunca se mostró en esta sesión, mostrarlo antes del login
+  
     if(!localStorage.getItem('splashShown')){
       import('./splash.js').then(mod => {
         mod.mostrarSplash({
           onComplete: () => {
-            // splash.js ya marca splashShown, pero aseguramos
+         
             localStorage.setItem('splashShown','1');
             console.log('[PoliSong] mostrarLogin(): splash onComplete, construyendo login');
             construirLogin(main);
@@ -127,7 +127,7 @@ export function mostrarLogin(main){
     construirLogin(main);
   } catch(e){
     console.error('Fallo inesperado en mostrarLogin:', e);
-    // Fallback duro: render mínimo para no dejar pantalla en blanco
+    
     if(main){
       main.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;">Error inicializando login. Reintenta refrescar (Ctrl+Shift+R).</div>';
     }

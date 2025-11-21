@@ -263,8 +263,11 @@ function attachPublicarListeners(scope, productos, profile) {
         productos.push({ id: Date.now(), tipo: tipo, titulo, precio: precioFinal, estado:'ACTIVO', metricas:{descargas:0,ventas:0,reproducciones:0,likes:0} });
         preview.textContent = tipo==='GRATIS' ? 'Canción gratis publicada.' : 'Canción de pago publicada.';
       }
-      saveLocal(LS_KEYS.PRODUCTS, productos);
-      const prof = loadLocal(LS_KEYS.ARTIST_PROFILE, profile); prof.metricas.productos = productos.length; saveLocal(LS_KEYS.ARTIST_PROFILE, prof);
+      // Corrección: usar LS_KEYS_BASE (antes se usaba LS_KEYS inexistente provocando error en inventario/publicación)
+      saveLocal(LS_KEYS_BASE.PRODUCTS, productos);
+      const prof = loadLocal(LS_KEYS_BASE.ARTIST_PROFILE, profile); 
+      prof.metricas.productos = productos.length; 
+      saveLocal(LS_KEYS_BASE.ARTIST_PROFILE, prof);
       form.reset(); tipoSelect.value='GRATIS'; actualizarVisibilidadCampos(); actualizarPreview();
     } catch(err){ preview.textContent='Error: '+ err.message; }
   });
@@ -442,7 +445,8 @@ function attachPedidosListeners(scope, pedidos) {
     const flow = ['PENDIENTE','PREPARANDO','ENVIADO','ENTREGADO'];
     const idx = flow.indexOf(pedido.estado);
     pedido.estado = flow[Math.min(idx+1, flow.length-1)];
-    saveLocal(LS_KEYS.ORDERS, pedidos);
+    // Corrección: referencia a LS_KEYS_BASE
+    saveLocal(LS_KEYS_BASE.ORDERS, pedidos);
     tr.children[3].textContent = pedido.estado;
     if(pedido.estado === 'ENTREGADO') btn.remove();
   });

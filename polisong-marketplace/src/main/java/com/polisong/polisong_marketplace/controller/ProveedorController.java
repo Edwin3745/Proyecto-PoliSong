@@ -119,6 +119,49 @@ public class ProveedorController {
         }
     }
 
+    // Inventario combinado (vinilos + canciones)
+    @GetMapping("/{id}/inventario")
+    public ResponseEntity<?> inventario(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(proveedorService.inventarioCompleto(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
+        }
+    }
+
+    // Actualizar vinilo del proveedor (estado, precio, etc.)
+    @PutMapping("/{id}/vinilos/{idVinilo}")
+    public ResponseEntity<?> actualizarVinilo(@PathVariable Integer id, @PathVariable Integer idVinilo, @RequestBody Vinilo cambios) {
+        try {
+            Vinilo actualizado = proveedorService.editarVinilo(id, idVinilo, cambios);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Vinilo actualizado",
+                    "idProducto", actualizado.getIdProducto(),
+                    "estado", actualizado.getEstado(),
+                    "precio", actualizado.getPrecio(),
+                    "cantidadDisponible", actualizado.getCantidadDisponible()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
+        }
+    }
+
+    // Actualizar canción del proveedor (estado, precio, etc.)
+    @PutMapping("/{id}/canciones/{idCancion}")
+    public ResponseEntity<?> actualizarCancion(@PathVariable Integer id, @PathVariable Integer idCancion, @RequestBody Cancion cambios) {
+        try {
+            Cancion actualizada = proveedorService.editarCancion(id, idCancion, cambios);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Canción actualizada",
+                    "idProducto", actualizada.getIdProducto(),
+                    "estado", actualizada.getEstado(),
+                    "precio", actualizada.getPrecio()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
+        }
+    }
+
     // Historial de pedidos 
     @GetMapping("/{id}/historial-pedidos")
     public List<Pedido> historialPedidos(@PathVariable Integer id) { return proveedorService.verHistorialPedidos(id); }
