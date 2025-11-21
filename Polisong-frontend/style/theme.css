@@ -221,3 +221,9 @@ a:hover { text-decoration:underline; }
 .pedidos-table th, .pedidos-table td { padding:10px 12px; border:1px solid var(--color-border); }
 .pedidos-table th { background:#162032; text-align:left; }
 
+/* ===== Admin simple (revert) ===== */
+.data-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+.data-table th, .data-table td { padding:8px 10px; border:1px solid var(--color-border); text-align:left; }
+.data-table thead th { background:#162032; }
+.data-table tbody tr:hover { background:#243146; }
+

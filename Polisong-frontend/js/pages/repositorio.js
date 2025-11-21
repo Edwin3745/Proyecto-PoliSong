@@ -1,26 +1,14 @@
 import { addToCart } from '../state/cart.js';
 import { updateCartBadge } from './navbar.js';
 
-const mockGratis = [
-  { id:'g1', titulo:'Canción Libre 1', artista:'Artista A', preview:'#' },
-  { id:'g2', titulo:'Canción Libre 2', artista:'Artista B', preview:'#' }
-];
-const mockVenta = [
-  { id:'c1', titulo:'Track Premium 1', artista:'Artista C', precio:1.99 },
-  { id:'c2', titulo:'Track Premium 2', artista:'Artista D', precio:2.49 }
-];
-const mockVinilos = [
-  { id:'v1', titulo:'Vinilo Clásico', artista:'Banda X', precio:19.99 },
-  { id:'v2', titulo:'Vinilo Épico', artista:'Banda Y', precio:24.99 }
-];
+let datosCanciones = [];
+let datosVinilos = [];
 
 export function renderRepositorio() {
   return `
     <div class="repositorio-section">
-      <div class="top-bar"><h2>Repositorio Musical</h2><p>Explora categorías</p></div>
-      ${renderCarrusel('Canciones Gratis', mockGratis, 'gratis')}
-      ${renderCarrusel('Canciones a la Venta', mockVenta, 'venta')}
-      ${renderCarrusel('Vinilos', mockVinilos, 'vinilos')}
+      <div class="top-bar"><h2>Repositorio Musical</h2><p>Explora publicaciones</p></div>
+      <div id="repoContent">Cargando contenido...</div>
     </div>
   `;
 }
@@ -38,7 +26,7 @@ function renderCarrusel(titulo, items, tipo){
             <div class="ri-actions">
               ${i.preview ? `<button class='icon-btn mini' data-act='preview' title='Preview'>▶️</button>`:''}
               <button class='icon-btn mini' data-act='detalle' title='Detalles'>ℹ️</button>
-              <button class='icon-btn mini' data-act='cart' title='Agregar al carrito'>🛒</button>
+              ${tipo !== 'gratis' ? `<button class='icon-btn mini' data-act='cart' title='Agregar al carrito'>🛒</button>`:''}
             </div>
           </div>`).join('')}
       </div>
@@ -47,6 +35,36 @@ function renderCarrusel(titulo, items, tipo){
 }
 
 // 
+export async function cargarRepositorio(container){
+  try {
+    const [cRes, vRes] = await Promise.all([
+      fetch('http://localhost:8080/api/canciones'),
+      fetch('http://localhost:8080/api/vinilos')
+    ]);
+    datosCanciones = cRes.ok ? await cRes.json() : [];
+    datosVinilos = vRes.ok ? await vRes.json() : [];
+    const activosCanciones = datosCanciones.filter(c => c.estado === 'ACTIVO');
+    const activosVinilos = datosVinilos.filter(v => v.estado === 'ACTIVO');
+    // Ordenar por fechaPublicacion descendente si existe el campo
+    activosCanciones.sort((a,b) => (b.fechaPublicacion || '').localeCompare(a.fechaPublicacion||''));
+    activosVinilos.sort((a,b) => (b.fechaPublicacion || '').localeCompare(a.fechaPublicacion||''));
+    const gratis = activosCanciones.filter(c => !c.precio || c.precio === 0);
+    const pago = activosCanciones.filter(c => c.precio && c.precio > 0);
+    const vinilos = activosVinilos;
+    const html = `
+      ${renderCarrusel('Canciones Gratis (Recientes)', gratis.map(m => ({ id: m.idProducto, titulo: m.nombre, artista: m.proveedor ? m.proveedor.aliasContacto : 'Desconocido'})), 'gratis')}
+      ${renderCarrusel('Canciones de Pago (Recientes)', pago.map(m => ({ id: m.idProducto, titulo: m.nombre + ' - $' + m.precio, artista: m.proveedor ? m.proveedor.aliasContacto : 'Desconocido'})), 'pago')}
+      ${renderCarrusel('Vinilos (Recientes)', vinilos.map(m => ({ id: m.idProducto, titulo: m.nombre + (m.precio? ' - $'+m.precio:''), artista: m.artista || (m.proveedor? m.proveedor.aliasContacto:'Desconocido')})), 'vinilo')}
+    `;
+    const repoContent = container.querySelector('#repoContent');
+    if (repoContent) repoContent.innerHTML = html;
+    attachRepositorioEvents(container);
+  } catch (err) {
+    const repoContent = container.querySelector('#repoContent');
+    if (repoContent) repoContent.textContent = 'Error cargando repositorio';
+  }
+}
+
 export function attachRepositorioEvents(container){
   container.querySelectorAll('.repo-item .icon-btn[data-act="cart"]').forEach(btn => {
     btn.addEventListener('click', () => {

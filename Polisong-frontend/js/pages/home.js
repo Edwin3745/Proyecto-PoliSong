@@ -1,7 +1,7 @@
 import { mostrarAdminPanel } from "./admin.js";
 import { mostrarProviderDashboard } from "./provider.js";
-import { renderPerfilSection } from "./perfil.js";
-import { renderRepositorio } from "./repositorio.js";
+import { renderPerfilSection, initPerfilEdicion } from "./perfil.js";
+import { renderRepositorio, cargarRepositorio } from "./repositorio.js";
 import { renderPlaylists } from "./playlists.js";
 import { renderDescargas } from "./descargas.js";
 import { renderCompras } from "./compras.js";
@@ -47,9 +47,11 @@ export function mostrarHome(main, nombreUsuario) {
             break;
           case "perfil":
             content.innerHTML = renderPerfilSection(nombreUsuario);
+            initPerfilEdicion(content);
             break;
           case "repositorio":
             content.innerHTML = renderRepositorio();
+            cargarRepositorio(content);
             break;
           case "playlists":
             content.innerHTML = renderPlaylists();

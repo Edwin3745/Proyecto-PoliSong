@@ -17,7 +17,7 @@ public class Telefono {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", length = 20)
-    private Role rol; // opcional: puede permanecer null
+    private Role rol; 
 
     public Telefono() {}
 

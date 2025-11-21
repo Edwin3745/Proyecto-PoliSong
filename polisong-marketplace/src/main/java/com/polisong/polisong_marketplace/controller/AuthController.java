@@ -118,10 +118,4 @@ public class AuthController {
         public String areaResponsable; // admin
     }
 
-    // helper legacy (no usado tras refactor); conservar comentado para referencia
-    // private boolean roleIsUser(String rol) {
-    //     if (rol == null) return false;
-    //     String r = rol.toUpperCase();
-    //     return "USUARIO".equals(r) || "ADMIN".equals(r);
-    // }
 }

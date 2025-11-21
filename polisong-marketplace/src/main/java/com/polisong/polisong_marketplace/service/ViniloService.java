@@ -14,9 +14,9 @@ public class ViniloService {
     @Autowired
     private ViniloRepository viniloRepository;
 
-    // -----------------------------------
+    
     // Registrar Vinilo
-    // -----------------------------------
+    
     public Vinilo registrarVinilo(Vinilo vinilo) {
         if (vinilo == null) {
             throw new IllegalArgumentException("El vinilo no puede ser nulo");
@@ -24,9 +24,8 @@ public class ViniloService {
         return viniloRepository.save(vinilo);
     }
 
-    // -----------------------------------
     // Actualizar Vinilo
-    // -----------------------------------
+   
     public Vinilo actualizarVinilo(Integer idVinilo, Vinilo viniloActualizado) {
         Optional<Vinilo> viniloOpt = viniloRepository.findById(idVinilo);
 
@@ -46,9 +45,9 @@ public class ViniloService {
         return viniloRepository.save(vinilo);
     }
 
-    // -----------------------------------
+  
     // Consultar Vinilo por ID
-    // -----------------------------------
+
     public Vinilo consultarVinilo(Integer idVinilo) {
         Optional<Vinilo> viniloOpt = viniloRepository.findById(idVinilo);
 
@@ -59,9 +58,9 @@ public class ViniloService {
         return viniloOpt.get();
     }
 
-    // -----------------------------------
+   
     // Listar todos los Vinilos
-    // -----------------------------------
+ 
     public List<Vinilo> listarVinilos() {
         return viniloRepository.findAll();
     }

@@ -23,10 +23,7 @@ public class VentaService {
         this.proveedorRepository = proveedorRepository;
     }
 
-    // =============================
-    // CRUD básico
-    // =============================
-
+    
     public List<Venta> listar() {
         return ventaRepository.findAll();
     }
@@ -43,9 +40,9 @@ public class VentaService {
         ventaRepository.deleteById(id);
     }
 
-    // =============================
+    
     // Registrar nueva venta
-    // =============================
+   
 
     public Venta registrarVenta(Venta venta) {
         if (venta.getEstado() == null) {
@@ -61,17 +58,17 @@ public class VentaService {
         return ventaRepository.save(venta);
     }
 
-    // =============================
+
     // Consultar todas las ventas
-    // =============================
+   
 
     public List<Venta> consultarVentas() {
         return ventaRepository.findAll();
     }
 
-    // =============================
+    
     // Actualizar estado
-    // =============================
+    
 
     public String actualizarEstadoVenta(Integer idVenta, String nuevoEstado) {
         Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
@@ -84,9 +81,8 @@ public class VentaService {
         return "Estado actualizado a: " + nuevoEstado;
     }
 
-    // =============================
     // Actualizar proveedor (idProveedor pertenece a Proveedor con rol enum)
-    // =============================
+    
 
     public String actualizarVentaProveedor(Integer idVenta, Integer idProveedor) {
         Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
@@ -103,9 +99,9 @@ public class VentaService {
         return "Proveedor actualizado correctamente para la venta ID: " + idVenta;
     }
 
-    // =============================
+    
     // Generar reporte de ventas
-    // =============================
+    
 
     public List<Venta> generarReporteVentas(Integer idProveedor) {
         if (idProveedor != null) {
@@ -114,9 +110,9 @@ public class VentaService {
         return ventaRepository.findAll();
     }
 
-    // =============================
-    // Notificar al proveedor (simple log)
-    // =============================
+    
+    // Notificar al proveedor 
+    
 
     public String notificarProveedorDesdePagina(Integer idVenta) {
         Venta venta = ventaRepository.findById(idVenta)
@@ -135,10 +131,9 @@ public class VentaService {
         return mensaje;
     }
 
-    // =============================
+    
     // Helpers
-    // =============================
-
+    
     private BigDecimal calcularIngresoDesdePedido(Pedido pedido) {
         if (pedido == null || pedido.getDetalles() == null) {
             return BigDecimal.ZERO;

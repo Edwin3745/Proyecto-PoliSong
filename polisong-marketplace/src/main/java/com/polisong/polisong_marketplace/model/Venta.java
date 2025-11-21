@@ -22,7 +22,7 @@ public class Venta {
     @Column(name = "ingreso_total", precision = 10, scale = 2)
     private BigDecimal ingresoTotal;
 
-    // Relaciones
+    
     @ManyToOne
     @JoinColumn(name = "id_pedido")
     private Pedido pedido;
@@ -31,7 +31,6 @@ public class Venta {
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedor;
 
-    // Getters y Setters
     public Integer getIdVenta() { return idVenta; }
     public void setIdVenta(Integer idVenta) { this.idVenta = idVenta; }
 

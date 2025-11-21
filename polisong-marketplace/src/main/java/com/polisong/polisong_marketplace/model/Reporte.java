@@ -24,7 +24,7 @@ public class Reporte {
     @Column(name = "total_generado")
     private Double totalGenerado;
 
-    // Relación correcta: muchos reportes pueden ser de un Administrador
+
     @ManyToOne
     @JoinColumn(name = "id_admin")
     private Administrador administrador;

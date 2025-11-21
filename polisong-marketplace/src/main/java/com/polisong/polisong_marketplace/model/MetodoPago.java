@@ -20,14 +20,10 @@ public class MetodoPago {
     @Column(name = "activo")
     private Boolean activo = true;
 
-    // -----------------------------
-    // CONSTRUCTOR
-    // -----------------------------
+    
     public MetodoPago() {}
 
-    // -----------------------------
-    // GETTERS Y SETTERS
-    // -----------------------------
+ 
     public Integer getIdMetodo() {
         return idMetodo;
     }

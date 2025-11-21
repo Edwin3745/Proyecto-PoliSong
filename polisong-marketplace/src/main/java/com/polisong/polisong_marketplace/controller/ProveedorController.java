@@ -2,6 +2,7 @@ package com.polisong.polisong_marketplace.controller;
 
 import com.polisong.polisong_marketplace.model.Pedido;
 import com.polisong.polisong_marketplace.model.Vinilo;
+import com.polisong.polisong_marketplace.model.Cancion;
 import com.polisong.polisong_marketplace.model.Proveedor;
 import com.polisong.polisong_marketplace.service.ProveedorService;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,14 @@ public class ProveedorController {
         Proveedor p = proveedorService.buscarPorId(id);
         return p != null ? ResponseEntity.ok(p) : ResponseEntity.notFound().build();
     }
-    // Registrar proveedor (semántico)
+    // Registrar proveedor 
     @PostMapping("/registrar")
     public Map<String, String> registrar(@RequestBody Proveedor proveedor) {
         String msg = proveedorService.registrar(proveedor);
         return Map.of("mensaje", msg);
     }
 
-    // Registro completo: usuario + proveedor
+    // Registro completo
     @PostMapping("/registrar-completo")
     public ResponseEntity<?> registrarCompleto(@RequestBody RegistroProveedorRequest request) {
         if (request == null || request.correo == null || request.contrasena == null) {
@@ -68,7 +69,7 @@ public class ProveedorController {
         ));
     }
 
-    // Guardar genérico (retrocompatibilidad)
+    // Guardar genérico 
     @PostMapping
     public Proveedor guardar(@RequestBody Proveedor proveedor) { return proveedorService.guardar(proveedor); }
 
@@ -85,7 +86,40 @@ public class ProveedorController {
     @GetMapping("/{id}/productos")
     public List<Vinilo> productos(@PathVariable Integer id) { return proveedorService.verProductos(id); }
 
-    // Historial de pedidos (derivado de ventas con pedidos adjuntos)
+    // Canciones del proveedor
+    @GetMapping("/{id}/canciones")
+    public List<Cancion> canciones(@PathVariable Integer id) { return proveedorService.verCanciones(id); }
+
+    // Publicar vinilo (asocia automáticamente el proveedor)
+    @PostMapping("/{id}/vinilos")
+    public ResponseEntity<?> publicarVinilo(@PathVariable Integer id, @RequestBody Vinilo vinilo) {
+        try {
+            Vinilo creado = proveedorService.publicarVinilo(id, vinilo);
+            return ResponseEntity.status(201).body(Map.of(
+                    "mensaje", "Vinilo publicado",
+                    "idProducto", creado.getIdProducto()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
+        }
+    }
+
+    // Publicar canción (gratis si precio null/0)
+    @PostMapping("/{id}/canciones")
+    public ResponseEntity<?> publicarCancion(@PathVariable Integer id, @RequestBody Cancion cancion) {
+        try {
+            Cancion creada = proveedorService.publicarCancion(id, cancion);
+            return ResponseEntity.status(201).body(Map.of(
+                    "mensaje", creada.getPrecio() != null && creada.getPrecio() > 0 ? "Canción de pago publicada" : "Canción gratis publicada",
+                    "idProducto", creada.getIdProducto(),
+                    "precio", creada.getPrecio()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
+        }
+    }
+
+    // Historial de pedidos 
     @GetMapping("/{id}/historial-pedidos")
     public List<Pedido> historialPedidos(@PathVariable Integer id) { return proveedorService.verHistorialPedidos(id); }
 

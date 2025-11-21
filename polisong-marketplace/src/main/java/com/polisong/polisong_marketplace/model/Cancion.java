@@ -15,6 +15,10 @@ public class Cancion extends Producto {
     @Column(name = "calidad_kbps")
     private Integer calidadKbps;
 
+    @ManyToOne
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
+
     public Cancion() {}
 
     @Override
@@ -22,7 +26,7 @@ public class Cancion extends Producto {
         return "Canción";
     }
 
-    // GETTERS Y SETTERS
+  
     public Double getDuracion() { return duracion; }
     public void setDuracion(Double duracion) { this.duracion = duracion; }
 
@@ -31,5 +35,8 @@ public class Cancion extends Producto {
 
     public Integer getCalidadKbps() { return calidadKbps; }
     public void setCalidadKbps(Integer calidadKbps) { this.calidadKbps = calidadKbps; }
+
+    public Proveedor getProveedor() { return proveedor; }
+    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
 }
 

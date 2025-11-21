@@ -17,19 +17,19 @@ public class Proveedor {
     @Column(name = "alias_contacto", length = 100)
     private String aliasContacto;
 
-    // Credenciales propias del proveedor (independiente de Usuario)
+    
     @Column(name = "correo", length = 120, unique = true, nullable = false)
     private String correo;
 
     @Column(name = "contrasena", length = 255, nullable = false)
     private String contrasena;
 
-    // Rol fijo mediante enum (si se desea conservar también en proveedor)
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", length = 20, nullable = false)
     private Role rol = Role.PROVEEDOR;
 
-    // Eliminada relación con Usuario, proveedor es entidad autónoma
+
 
     @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL)
     @JsonIgnore

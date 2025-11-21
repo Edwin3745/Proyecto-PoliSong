@@ -21,7 +21,7 @@ public class Vinilo extends Producto {
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedor;
 
-    @OneToMany(mappedBy = "producto") // ✅ CAMBIO AQUÍ
+    @OneToMany(mappedBy = "producto") 
     @JsonIgnore
     private List<DetallePedido> detalles;
 
@@ -32,7 +32,6 @@ public class Vinilo extends Producto {
         return "Vinilo";
     }
 
-    // GETTERS Y SETTERS
     public String getArtista() { return artista; }
     public void setArtista(String artista) { this.artista = artista; }
 

@@ -37,13 +37,13 @@ public class ReporteService {
         return reporteRepository.findByAdministrador_IdAdmin(idUsuario);
     }
 
-    // Listar reportes por "estado": en el modelo actual se usa el campo "tipo"
-    // Mantenemos el nombre para compatibilidad, pero filtramos por tipo
+    // Listar reportes por "estado
+    // Mantenemos el nombre para compatibilidad
     public List<Reporte> listarPorEstado(String estadoOTipo) {
         return reporteRepository.findByTipoIgnoreCase(estadoOTipo);
     }
 
-    // Actualizar el "estado" del reporte: en el modelo actual actualiza el campo "tipo"
+    // Actualizar el "estado" del reporte
     public Reporte actualizarEstado(Integer idReporte, String nuevoEstadoOTipo) {
         Optional<Reporte> reporteOpt = reporteRepository.findById(idReporte);
         if (reporteOpt.isPresent()) {
@@ -54,10 +54,10 @@ public class ReporteService {
         return null;
     }
 
-    // Contar la cantidad de reportes creados en una fecha específica
+    // Contar la cantidad de reportes creados en una fecha
     public long contarPorFecha(LocalDate fecha) {
         LocalDateTime inicio = fecha.atStartOfDay();
-        LocalDateTime fin = fecha.plusDays(1).atStartOfDay(); // exclusivo
+        LocalDateTime fin = fecha.plusDays(1).atStartOfDay(); 
         return reporteRepository.countByFechaGeneracionBetween(inicio, fin);
     }
 }

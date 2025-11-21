@@ -13,25 +13,24 @@ public class Compra {
     @Column(name = "id_compra")
     private Integer idCompra;
 
-    // Usuario que realiza la compra
+   
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    // Método de pago usado
+   
     @ManyToOne
     @JoinColumn(name = "id_metodo_pago", nullable = false)
     private MetodoPago metodoPago;
 
-    // Fecha y hora de la compra
+    
     @Column(name = "fecha_compra")
     private LocalDateTime fechaCompra;
 
-    // Total de la compra
+  
     @Column(name = "total")
     private Double total;
 
-    // Productos adquiridos (Canciones y Vinilos)
     @ManyToMany
     @JoinTable(
         name = "compra_producto",
@@ -40,19 +39,17 @@ public class Compra {
     )
     private List<Producto> productos;
 
-    // Relación opcional con Pedido
+   
     @OneToOne
     @JoinColumn(name = "id_pedido", nullable = true)
     private Pedido pedido;
 
-    // Estado de la compra (por ejemplo: COMPLETADA, PENDIENTE, CANCELADA)
     @Column(name = "estado", length = 50)
     private String estado;
 
-    // Constructor vacío
+ 
     public Compra() {}
 
-    // Getters y Setters
     public Integer getIdCompra() { return idCompra; }
     public void setIdCompra(Integer idCompra) { this.idCompra = idCompra; }
 

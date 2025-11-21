@@ -1,6 +1,7 @@
 package com.polisong.polisong_marketplace.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // Herencia real en la BD
@@ -21,13 +22,15 @@ public abstract class Producto {
     @Column(name = "estado", length = 50)
     private String estado;
 
-    // Método abstracto: define el tipo de producto (Canción o Vinilo)
+    @Column(name = "fecha_publicacion")
+    private LocalDateTime fechaPublicacion;
+
     public abstract String getTipoProducto();
 
-    // CONSTRUCTOR
+   
     public Producto() {}
 
-    // GETTERS Y SETTERS
+    
     public Integer getIdProducto() { return idProducto; }
     public void setIdProducto(Integer idProducto) { this.idProducto = idProducto; }
 
@@ -39,4 +42,14 @@ public abstract class Producto {
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    public LocalDateTime getFechaPublicacion() { return fechaPublicacion; }
+    public void setFechaPublicacion(LocalDateTime fechaPublicacion) { this.fechaPublicacion = fechaPublicacion; }
+
+    @PrePersist
+    protected void prePersistProducto() {
+        if (fechaPublicacion == null) {
+            fechaPublicacion = LocalDateTime.now();
+        }
+    }
 }

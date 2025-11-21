@@ -4,6 +4,9 @@ import { mostrarHome } from "./home.js";
 export function mostrarRegistro(main) {
   document.body.classList.add('auth-screen');
   document.body.classList.remove('home-mode');
+    // Asegurar que no quede navbar previa
+    const oldNav = document.getElementById('topNavbar');
+    if (oldNav) oldNav.remove();
   main.innerHTML = `
     <section class="register-wrapper">
       <div class="register-card">
@@ -99,11 +102,25 @@ export function mostrarRegistro(main) {
         body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('userRole', data.rol);
-        const nombreParaUI = data.rol === 'PROVEEDOR' ? aliasContacto || data.correo : nombreUsuario;
-        localStorage.setItem('userName', nombreParaUI);
-        redirigirPorRol(main, data.rol, nombreParaUI);
+        if (res.ok) {
+          // Prefill para login posterior (no autenticar directamente)
+          localStorage.setItem('prefillEmail', correoPrincipal);
+          localStorage.setItem('prefillPassword', contrasena);
+          // Limpiar cualquier sesión previa
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('userEmail');
+          localStorage.removeItem('userName');
+          localStorage.removeItem('idUsuario');
+          localStorage.removeItem('idProveedor');
+          // Redirigir a login con aviso
+          import('./login.js').then(m => {
+            m.mostrarLogin(main);
+            const infoBox = document.createElement('div');
+            infoBox.className = 'prefill-hint';
+            infoBox.textContent = 'Cuenta creada. Revisa campos prellenados y pulsa Iniciar Sesión.';
+            const card = document.querySelector('.login-card');
+            if(card) card.appendChild(infoBox);
+          });
       } else {
         mostrarError(data.mensaje || 'Error al registrar.');
       }

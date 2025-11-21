@@ -27,7 +27,7 @@ public class Usuario {
     @Column(name = "activo")
     private Boolean activo;
 
-    // Rol fijo mediante enum
+
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", length = 20, nullable = false)
     private Role rol = Role.USUARIO;

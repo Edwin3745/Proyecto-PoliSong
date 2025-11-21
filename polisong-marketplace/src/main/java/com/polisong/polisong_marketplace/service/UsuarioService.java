@@ -4,7 +4,6 @@ import com.polisong.polisong_marketplace.model.Role;
 import com.polisong.polisong_marketplace.model.Usuario;
 import com.polisong.polisong_marketplace.repository.PedidoRepository;
 import com.polisong.polisong_marketplace.repository.UsuarioRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,17 +16,15 @@ public class UsuarioService {
     
 
     private final PedidoRepository pedidoRepository;
+    
     private final NotificacionService notificacionService;
-    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           PedidoRepository pedidoRepository,
-                          NotificacionService notificacionService,
-                          PasswordEncoder passwordEncoder) {
+                          NotificacionService notificacionService) {
         this.usuarioRepository = usuarioRepository;
         this.pedidoRepository = pedidoRepository;
         this.notificacionService = notificacionService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Usuario> listar() {
@@ -55,10 +52,6 @@ public class UsuarioService {
         if (nuevo.getRol() == null) {
             nuevo.setRol(Role.USUARIO);
         }
-        // Hash de contraseña
-        if (nuevo.getContrasena() != null && !nuevo.getContrasena().isBlank()) {
-            nuevo.setContrasena(passwordEncoder.encode(nuevo.getContrasena()));
-        }
         usuarioRepository.save(nuevo);
         return "Usuario registrado correctamente.";
     }
@@ -67,7 +60,7 @@ public class UsuarioService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreoPrincipal(correo);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            if (usuario.getContrasena() != null && passwordEncoder.matches(contrasena, usuario.getContrasena())) {
+            if (usuario.getContrasena().equals(contrasena)) {
                 usuario.setActivo(true);
                 usuarioRepository.save(usuario);
                 return "Inicio de sesión exitoso.";
@@ -93,11 +86,8 @@ public class UsuarioService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            if (usuario.getContrasena() != null && passwordEncoder.matches(actual, usuario.getContrasena())) {
-                if (nueva == null || nueva.isBlank()) {
-                    return "La nueva contraseña no puede estar vacía.";
-                }
-                usuario.setContrasena(passwordEncoder.encode(nueva));
+            if (usuario.getContrasena().equals(actual)) {
+                usuario.setContrasena(nueva);
                 usuarioRepository.save(usuario);
                 return "Contraseña actualizada correctamente.";
             } else {

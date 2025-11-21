@@ -17,7 +17,6 @@ public class Administrador {
     @Column(name = "area_responsable", length = 100)
     private String areaResponsable;
 
-    // Rol fijo mediante enum (administrador siempre ADMIN)
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", length = 20, nullable = false)
     private Role rol = Role.ADMIN;

@@ -42,7 +42,8 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                     "mensaje", resultado,
                     "correo", usuario.getCorreoPrincipal(),
-                    "rol", usuario.getRol() != null ? usuario.getRol().name() : "USUARIO"
+                    "rol", usuario.getRol() != null ? usuario.getRol().name() : "USUARIO",
+                    "idUsuario", usuario.getIdUsuario()
             ));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", resultado));
@@ -52,7 +53,6 @@ public class UsuarioController {
     public ResponseEntity<Map<String,Object>> iniciarSesion(@RequestParam String correo, @RequestParam String contrasena) {
         String resultado = usuarioService.iniciarSesion(correo, contrasena);
         if (resultado.equals("Inicio de sesión exitoso.")) {
-            // Recuperación básica del usuario (mantiene enfoque original sin nuevos métodos del service)
             Usuario usuarioMatch = usuarioService.listar().stream()
                     .filter(u -> correo.equals(u.getCorreoPrincipal()))
                     .findFirst().orElse(null);
@@ -60,7 +60,8 @@ public class UsuarioController {
                     "mensaje", resultado,
                     "nombre", usuarioMatch != null ? usuarioMatch.getNombreUsuario() : correo,
                     "correo", correo,
-                    "rol", usuarioMatch != null && usuarioMatch.getRol() != null ? usuarioMatch.getRol().name() : "USUARIO"
+                    "rol", usuarioMatch != null && usuarioMatch.getRol() != null ? usuarioMatch.getRol().name() : "USUARIO",
+                    "idUsuario", usuarioMatch != null ? usuarioMatch.getIdUsuario() : null
             ));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("mensaje", resultado));
@@ -84,9 +85,7 @@ public class UsuarioController {
         usuarioService.eliminar(id);
     }
 
-    // =============================
-    // Endpoints adicionales
-    // =============================
+    
 
     @PutMapping("/{id}/editarPerfil")
     public ResponseEntity<Map<String, String>> editarPerfil(
@@ -94,6 +93,7 @@ public class UsuarioController {
             @RequestBody Map<String, Object> payload) {
         String nombreUsuario = payload.get("nombreUsuario") != null ? payload.get("nombreUsuario").toString() : null;
         String correoPrincipal = payload.get("correoPrincipal") != null ? payload.get("correoPrincipal").toString() : null;
+        
         // Mantener lógica original: delegar validación/existencia al service
         String resultado = usuarioService.editarPerfil(id, nombreUsuario, correoPrincipal);
         return ResponseEntity.ok(Map.of("mensaje", resultado));
@@ -109,25 +109,6 @@ public class UsuarioController {
         return ResponseEntity.ok(u);
     }
 
-    // Historial de pedidos (requiere método en service: verHistorialPedidos). Se deja temporalmente deshabilitado si no existe.
-    // @GetMapping("/{id}/historial-pedidos")
-    // public List<Pedido> historialPedidos(@PathVariable Integer id) {
-    //     return usuarioService.verHistorialPedidos(id);
-    // }
 
-    // Endpoint de validación (requiere método validarCredenciales en service). Comentado si aún no implementado.
-    // @PostMapping("/validar")
-    // public Map<String, Object> validar(@RequestParam("correo") String correo,
-    //                                    @RequestParam("contrasena") String contrasena) {
-    //     boolean valido = usuarioService.validarCredenciales(correo, contrasena);
-    //     return Map.of("valido", valido);
-    // }
-
-    // Recuperación de contraseña (requiere método enviarCorreoRecuperacion en service). Comentado si no existe.
-    // @PostMapping("/recuperar-contrasena")
-    // public Map<String, String> recuperarContrasena(@RequestParam("correo") String correo) {
-    //     String resultado = usuarioService.enviarCorreoRecuperacion(correo);
-    //     return Map.of("mensaje", resultado);
-    // }
 }
 
